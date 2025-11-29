@@ -32,6 +32,8 @@ namespace SAM.Picker
         public uint Id;
         public string Type;
         public int ImageIndex;
+        public bool IsSelected; // New: Track if game is in selected section
+        public int PlaytimeForever; // Total playtime in minutes
 
         public string Name
         {
@@ -42,6 +44,27 @@ namespace SAM.Picker
         public string ImageUrl;
 
         public ListViewItem Item;
+        
+        public string FormattedPlaytime
+        {
+            get
+            {
+                if (PlaytimeForever == 0)
+                    return "0h";
+                
+                int hours = PlaytimeForever / 60;
+                int minutes = PlaytimeForever % 60;
+                
+                if (hours >= 1000)
+                    return $"{hours:N0}h"; // Use comma separator for 1000+ hours
+                else if (hours > 0 && minutes > 0)
+                    return $"{hours}h {minutes}m";
+                else if (hours > 0)
+                    return $"{hours}h";
+                else
+                    return $"{minutes}m";
+            }
+        }
 
         public GameInfo(uint id, string type)
         {
@@ -50,6 +73,7 @@ namespace SAM.Picker
             this.Name = null;
             this.ImageIndex = 0;
             this.ImageUrl = null;
+            this.IsSelected = false;
         }
     }
 }

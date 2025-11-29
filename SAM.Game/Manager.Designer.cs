@@ -36,12 +36,15 @@
             this._StoreButton = new System.Windows.Forms.ToolStripButton();
             this._ReloadButton = new System.Windows.Forms.ToolStripButton();
             this._ResetButton = new System.Windows.Forms.ToolStripButton();
+            this._AutoCloseTimerButton = new System.Windows.Forms.ToolStripButton();
             this._AchievementImageList = new System.Windows.Forms.ImageList(this.components);
             this._MainStatusStrip = new System.Windows.Forms.StatusStrip();
             this._CountryStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this._GameStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this._DownloadStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this._CallbackTimer = new System.Windows.Forms.Timer(this.components);
+            this._AchievementContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this._SetUnlockTimeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._MainTabControl = new System.Windows.Forms.TabControl();
             this._AchievementsTabPage = new System.Windows.Forms.TabPage();
             this._AchievementListView = new SAM.Game.DoubleBufferedListView();
@@ -69,6 +72,7 @@
             this._AchievementsToolStrip.SuspendLayout();
             this._StatisticsTabPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._StatisticsDataGridView)).BeginInit();
+            this._AchievementContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // _ToolStripSeparator1
@@ -86,7 +90,9 @@
             this._MainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._StoreButton,
             this._ReloadButton,
-            this._ResetButton});
+            this._ResetButton,
+            _ToolStripSeparator1,
+            this._AutoCloseTimerButton});
             this._MainToolStrip.Location = new System.Drawing.Point(0, 0);
             this._MainToolStrip.Name = "_MainToolStrip";
             this._MainToolStrip.Size = new System.Drawing.Size(712, 25);
@@ -124,6 +130,15 @@
             this._ResetButton.Text = "Reset";
             this._ResetButton.ToolTipText = "Reset achievements and/or statistics for active game.";
             this._ResetButton.Click += new System.EventHandler(this.OnResetAllStats);
+            // 
+            // _AutoCloseTimerButton
+            // 
+            this._AutoCloseTimerButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._AutoCloseTimerButton.Name = "_AutoCloseTimerButton";
+            this._AutoCloseTimerButton.Size = new System.Drawing.Size(120, 22);
+            this._AutoCloseTimerButton.Text = "Auto-Close Timer";
+            this._AutoCloseTimerButton.ToolTipText = "Set a target playtime to automatically close this game";
+            this._AutoCloseTimerButton.Click += new System.EventHandler(this.OnAutoCloseTimer);
             // 
             // _AchievementImageList
             // 
@@ -167,6 +182,20 @@
             this._CallbackTimer.Enabled = true;
             this._CallbackTimer.Tick += new System.EventHandler(this.OnTimer);
             // 
+            // _AchievementContextMenu
+            // 
+            this._AchievementContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._SetUnlockTimeMenuItem});
+            this._AchievementContextMenu.Name = "_AchievementContextMenu";
+            this._AchievementContextMenu.Size = new System.Drawing.Size(181, 48);
+            // 
+            // _SetUnlockTimeMenuItem
+            // 
+            this._SetUnlockTimeMenuItem.Name = "_SetUnlockTimeMenuItem";
+            this._SetUnlockTimeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this._SetUnlockTimeMenuItem.Text = "Set Unlock Time...";
+            this._SetUnlockTimeMenuItem.Click += new System.EventHandler(this.OnSetUnlockTime);
+            // 
             // _MainTabControl
             // 
             this._MainTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -202,6 +231,7 @@
             this._AchievementNameColumnHeader,
             this._AchievementDescriptionColumnHeader,
             this._AchievementUnlockTimeColumnHeader});
+            this._AchievementListView.ContextMenuStrip = this._AchievementContextMenu;
             this._AchievementListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this._AchievementListView.ForeColor = System.Drawing.Color.White;
             this._AchievementListView.FullRowSelect = true;
@@ -235,6 +265,8 @@
             // 
             // _AchievementsToolStrip
             // 
+            this._ToolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this._SetBulkUnlockTimeButton = new System.Windows.Forms.ToolStripButton();
             this._AchievementsToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._LockAllButton,
             this._InvertAllButton,
@@ -245,7 +277,9 @@
             this._DisplayUnlockedOnlyButton,
             _ToolStripSeparator2,
             this._MatchingStringLabel,
-            this._MatchingStringTextBox});
+            this._MatchingStringTextBox,
+            this._ToolStripSeparator3,
+            this._SetBulkUnlockTimeButton});
             this._AchievementsToolStrip.Location = new System.Drawing.Point(3, 3);
             this._AchievementsToolStrip.Name = "_AchievementsToolStrip";
             this._AchievementsToolStrip.Size = new System.Drawing.Size(682, 25);
@@ -326,6 +360,21 @@
             this._MatchingStringTextBox.ToolTipText = "Type at least 3 characters that must appear in the name or description";
             this._MatchingStringTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnFilterUpdate);
             // 
+            // _ToolStripSeparator3
+            // 
+            this._ToolStripSeparator3.Name = "_ToolStripSeparator3";
+            this._ToolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // _SetBulkUnlockTimeButton
+            // 
+            this._SetBulkUnlockTimeButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._SetBulkUnlockTimeButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._SetBulkUnlockTimeButton.Name = "_SetBulkUnlockTimeButton";
+            this._SetBulkUnlockTimeButton.Size = new System.Drawing.Size(98, 22);
+            this._SetBulkUnlockTimeButton.Text = "Bulk Set Times...";
+            this._SetBulkUnlockTimeButton.ToolTipText = "Set unlock times for multiple achievements";
+            this._SetBulkUnlockTimeButton.Click += new System.EventHandler(this.OnBulkSetUnlockTime);
+            // 
             // _StatisticsTabPage
             // 
             this._StatisticsTabPage.Controls.Add(this._EnableStatsEditingCheckBox);
@@ -378,7 +427,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(640, 50);
             this.Name = "Manager";
-            this.Text = "Steam Achievement Manager 7.0";
+            this.Text = "HxB SAM Enhanced 1.0";
             this._MainToolStrip.ResumeLayout(false);
             this._MainToolStrip.PerformLayout();
             this._MainStatusStrip.ResumeLayout(false);
@@ -391,6 +440,7 @@
             this._StatisticsTabPage.ResumeLayout(false);
             this._StatisticsTabPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this._StatisticsDataGridView)).EndInit();
+            this._AchievementContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -418,6 +468,7 @@
         private System.Windows.Forms.ToolStripButton _UnlockAllButton;
         private System.Windows.Forms.DataGridView _StatisticsDataGridView;
         private System.Windows.Forms.ToolStripButton _ResetButton;
+        private System.Windows.Forms.ToolStripButton _AutoCloseTimerButton;
         private System.Windows.Forms.ToolStripStatusLabel _DownloadStatusLabel;
         private System.Windows.Forms.ToolStripLabel _DisplayLabel;
         private System.Windows.Forms.ToolStripButton _DisplayUnlockedOnlyButton;
@@ -426,5 +477,9 @@
         private System.Windows.Forms.ToolStripTextBox _MatchingStringTextBox;
         private System.Windows.Forms.ColumnHeader _AchievementUnlockTimeColumnHeader;
         private System.Windows.Forms.CheckBox _EnableStatsEditingCheckBox;
+        private System.Windows.Forms.ContextMenuStrip _AchievementContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem _SetUnlockTimeMenuItem;
+        private System.Windows.Forms.ToolStripSeparator _ToolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton _SetBulkUnlockTimeButton;
     }
 }

@@ -30,6 +30,7 @@ namespace SAM.Game.Stats
         public string Id;
         public bool IsAchieved;
         public DateTime? UnlockTime;
+        public DateTime? ScheduledUnlockTime; // New: User-defined unlock time
         public int Permission;
         public string IconNormal;
         public string IconLocked;

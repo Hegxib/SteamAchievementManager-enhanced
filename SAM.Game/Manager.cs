@@ -52,6 +52,11 @@ namespace SAM.Game
 
         //private API.Callback<APITypes.UserStatsStored> UserStatsStoredCallback;
 
+        // Auto-close countdown timer fields
+        private bool _AutoCloseEnabled = false;
+        private int _CountdownSeconds = 0;
+        private DateTime _CountdownStartTime = DateTime.Now;
+
         public Manager(long gameId, API.Client client)
         {
             this.InitializeComponent();
@@ -104,6 +109,80 @@ namespace SAM.Game
             //this.UserStatsStoredCallback = new API.Callback(1102, new API.Callback.CallbackFunction(this.OnUserStatsStored));
 
             this.RefreshStats();
+            this.LoadTimerState();
+        }
+
+        private void LoadTimerState()
+        {
+            try
+            {
+                string timerFile = GetTimerFilePath();
+                if (File.Exists(timerFile))
+                {
+                    string[] lines = File.ReadAllLines(timerFile);
+                    if (lines.Length >= 2)
+                    {
+                        if (int.TryParse(lines[0], out int countdownSeconds) && 
+                            DateTime.TryParse(lines[1], out DateTime startTime))
+                        {
+                            int elapsedSeconds = (int)(DateTime.Now - startTime).TotalSeconds;
+                            int remainingSeconds = countdownSeconds - elapsedSeconds;
+                            
+                            if (remainingSeconds > 0)
+                            {
+                                // Timer still has time left, restore it
+                                this._CountdownSeconds = countdownSeconds;
+                                this._CountdownStartTime = startTime;
+                                this._AutoCloseEnabled = true;
+                            }
+                            else
+                            {
+                                // Timer expired while closed, delete the file
+                                File.Delete(timerFile);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading timer state: {ex.Message}");
+            }
+        }
+
+        private void SaveTimerState()
+        {
+            try
+            {
+                string timerFile = GetTimerFilePath();
+                if (this._AutoCloseEnabled)
+                {
+                    File.WriteAllLines(timerFile, new[]
+                    {
+                        this._CountdownSeconds.ToString(),
+                        this._CountdownStartTime.ToString("o")
+                    });
+                }
+                else if (File.Exists(timerFile))
+                {
+                    File.Delete(timerFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error saving timer state: {ex.Message}");
+            }
+        }
+
+        private string GetTimerFilePath()
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string samFolder = Path.Combine(appData, "SAM");
+            if (!Directory.Exists(samFolder))
+            {
+                Directory.CreateDirectory(samFolder);
+            }
+            return Path.Combine(samFolder, $"timer_{this._GameId}.txt");
         }
 
         private void AddAchievementIcon(Stats.AchievementInfo info, Image icon)
@@ -500,9 +579,18 @@ namespace SAM.Game
                     item.SubItems.Add(info.Description);
                 }
 
-                item.SubItems.Add(info.UnlockTime.HasValue == true
-                    ? info.UnlockTime.Value.ToString()
-                    : "");
+                // Display scheduled time if set, otherwise actual unlock time
+                if (info.ScheduledUnlockTime.HasValue)
+                {
+                    item.SubItems.Add($"⏰ {info.ScheduledUnlockTime.Value:yyyy-MM-dd HH:mm:ss}");
+                    item.BackColor = Color.FromArgb(32, 32, 64); // Blue tint for scheduled
+                }
+                else
+                {
+                    item.SubItems.Add(info.UnlockTime.HasValue == true
+                        ? info.UnlockTime.Value.ToString()
+                        : "");
+                }
 
                 info.ImageIndex = 0;
 
@@ -606,7 +694,44 @@ namespace SAM.Game
                 return 0;
             }
 
-            foreach (var info in achievements)
+            // Sort achievements with scheduled times by their unlock time
+            var scheduledAchievements = achievements
+                .Where(a => a.IsAchieved && a.ScheduledUnlockTime.HasValue)
+                .OrderBy(a => a.ScheduledUnlockTime.Value)
+                .ToList();
+
+            var immediateAchievements = achievements
+                .Where(a => !a.ScheduledUnlockTime.HasValue)
+                .ToList();
+
+            // Handle scheduled achievements with a warning
+            if (scheduledAchievements.Count > 0)
+            {
+                var message = $"You have {scheduledAchievements.Count} achievement(s) with scheduled unlock times.\n\n" +
+                             "NOTE: Steam's API does not support setting custom unlock times directly. " +
+                             "The achievements will be unlocked now, but the unlock time displayed in Steam " +
+                             "will be the current time, not your scheduled time.\n\n" +
+                             "Scheduled achievements:\n" +
+                             string.Join("\n", scheduledAchievements.Take(5).Select(a => 
+                                 $"  • {a.Name} - {a.ScheduledUnlockTime:yyyy-MM-dd HH:mm:ss}")) +
+                             (scheduledAchievements.Count > 5 ? $"\n  ... and {scheduledAchievements.Count - 5} more" : "") +
+                             "\n\nDo you want to continue?";
+
+                var result = MessageBox.Show(
+                    this,
+                    message,
+                    "Scheduled Unlock Times",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (result == DialogResult.No)
+                {
+                    return -1;
+                }
+            }
+
+            // Process all achievements (immediate + scheduled)
+            foreach (var info in immediateAchievements.Concat(scheduledAchievements))
             {
                 if (this._SteamClient.SteamUserStats.SetAchievement(info.Id, info.IsAchieved) == false)
                 {
@@ -693,7 +818,79 @@ namespace SAM.Game
         {
             this._CallbackTimer.Enabled = false;
             this._SteamClient.RunCallbacks(false);
+            
+            // Check auto-close timer
+            if (this._AutoCloseEnabled)
+            {
+                CheckAutoCloseTimer();
+            }
+            
             this._CallbackTimer.Enabled = true;
+        }
+
+        private void CheckAutoCloseTimer()
+        {
+            try
+            {
+                // Calculate elapsed time since countdown started
+                int elapsedSeconds = (int)(DateTime.Now - this._CountdownStartTime).TotalSeconds;
+                int remainingSeconds = this._CountdownSeconds - elapsedSeconds;
+                
+                // Update title with remaining time
+                string baseName = this._SteamClient.SteamApps001.GetAppData((uint)this._GameId, "name");
+                
+                if (remainingSeconds > 0)
+                {
+                    this.Text = $"HxB | {baseName} | ⏱ {FormatSeconds(remainingSeconds)} remaining";
+                }
+                else
+                {
+                    // Countdown reached! Close the window silently
+                    this._AutoCloseEnabled = false;
+                    SaveTimerState(); // This will delete the timer file
+                    this.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Auto-close timer error: {ex.Message}");
+            }
+        }
+
+        private string FormatMinutes(int minutes)
+        {
+            if (minutes <= 0)
+                return "0m";
+
+            int hours = minutes / 60;
+            int mins = minutes % 60;
+
+            if (hours > 0 && mins > 0)
+                return $"{hours}h {mins}m";
+            else if (hours > 0)
+                return $"{hours}h";
+            else
+                return $"{mins}m";
+        }
+
+        private string FormatSeconds(int totalSeconds)
+        {
+            if (totalSeconds <= 0)
+                return "0s";
+
+            int hours = totalSeconds / 3600;
+            int minutes = (totalSeconds % 3600) / 60;
+            int seconds = totalSeconds % 60;
+
+            string result = "";
+            if (hours > 0)
+                result += $"{hours}h ";
+            if (minutes > 0)
+                result += $"{minutes}m ";
+            if (seconds > 0 || result == "")
+                result += $"{seconds}s";
+
+            return result.Trim();
         }
 
         private void OnRefresh(object sender, EventArgs e)
@@ -805,6 +1002,32 @@ namespace SAM.Game
             view.Rows[e.RowIndex].ErrorText = "";
         }
 
+        private void OnAutoCloseTimer(object sender, EventArgs e)
+        {
+            using (var dialog = new AutoCloseTimerDialog())
+            {
+                if (dialog.ShowDialog(this) == DialogResult.OK && dialog.EnableAutoClose)
+                {
+                    _AutoCloseEnabled = true;
+                    _CountdownSeconds = dialog.CountdownSeconds;
+                    _CountdownStartTime = DateTime.Now;
+                    SaveTimerState();
+                }
+                else if (dialog.DialogResult == DialogResult.Cancel)
+                {
+                    // User cancelled, disable timer
+                    _AutoCloseEnabled = false;
+                    SaveTimerState();
+                }
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            SaveTimerState();
+        }
+
         private void OnResetAllStats(object sender, EventArgs e)
         {
             if (MessageBox.Show(
@@ -892,6 +1115,147 @@ namespace SAM.Game
         private void OnFilterUpdate(object sender, KeyEventArgs e)
         {
             this.GetAchievements();
+        }
+
+        private void OnSetUnlockTime(object sender, EventArgs e)
+        {
+            if (this._AchievementListView.SelectedItems.Count == 0)
+            {
+                MessageBox.Show(
+                    this,
+                    "Please select an achievement first.",
+                    "Information",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            var selectedItem = this._AchievementListView.SelectedItems[0];
+            if (selectedItem.Tag is not Stats.AchievementInfo info)
+            {
+                return;
+            }
+
+            if ((info.Permission & 3) != 0)
+            {
+                MessageBox.Show(
+                    this,
+                    "Sorry, but this is a protected achievement and cannot be managed with Steam Achievement Manager.",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+            using (var dialog = new AchievementTimeDialog(info.Name, info.ScheduledUnlockTime))
+            {
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    info.ScheduledUnlockTime = dialog.ScheduledTime;
+                    
+                    // Update the display
+                    if (info.ScheduledUnlockTime.HasValue)
+                    {
+                        selectedItem.SubItems[2].Text = $"⏰ {info.ScheduledUnlockTime.Value:yyyy-MM-dd HH:mm:ss}";
+                        selectedItem.BackColor = Color.FromArgb(32, 32, 64); // Blue tint for scheduled
+                    }
+                    else
+                    {
+                        selectedItem.SubItems[2].Text = info.UnlockTime.HasValue 
+                            ? info.UnlockTime.Value.ToString() 
+                            : "";
+                        selectedItem.BackColor = (info.Permission & 3) == 0 ? Color.Black : Color.FromArgb(64, 0, 0);
+                    }
+                }
+            }
+        }
+
+        private void OnBulkSetUnlockTime(object sender, EventArgs e)
+        {
+            using (var dialog = new BulkUnlockTimeDialog())
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                var achievements = new List<Stats.AchievementInfo>();
+
+                if (dialog.ApplyToAll)
+                {
+                    // Apply to all displayed achievements
+                    foreach (ListViewItem item in this._AchievementListView.Items)
+                    {
+                        if (item.Tag is Stats.AchievementInfo info && (info.Permission & 3) == 0)
+                        {
+                            achievements.Add(info);
+                        }
+                    }
+                }
+                else
+                {
+                    // Apply to selected achievements only
+                    foreach (ListViewItem item in this._AchievementListView.SelectedItems)
+                    {
+                        if (item.Tag is Stats.AchievementInfo info && (info.Permission & 3) == 0)
+                        {
+                            achievements.Add(info);
+                        }
+                    }
+
+                    if (achievements.Count == 0)
+                    {
+                        MessageBox.Show(
+                            this,
+                            "Please select at least one achievement first.",
+                            "Information",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+
+                if (achievements.Count == 0)
+                {
+                    MessageBox.Show(
+                        this,
+                        "No achievements available to set unlock times.",
+                        "Information",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Apply sequential unlock times
+                var currentTime = dialog.StartTime;
+                var interval = TimeSpan.FromMinutes(dialog.IntervalMinutes);
+
+                this._AchievementListView.BeginUpdate();
+                foreach (var info in achievements)
+                {
+                    info.ScheduledUnlockTime = currentTime;
+                    
+                    // Update the display
+                    if (info.Item != null)
+                    {
+                        info.Item.SubItems[2].Text = $"⏰ {currentTime:yyyy-MM-dd HH:mm:ss}";
+                        info.Item.BackColor = Color.FromArgb(32, 32, 64); // Blue tint for scheduled
+                    }
+
+                    currentTime = currentTime.Add(interval);
+                }
+                this._AchievementListView.EndUpdate();
+
+                MessageBox.Show(
+                    this,
+                    $"Set scheduled unlock times for {achievements.Count} achievement(s).\n\n" +
+                    $"Starting at: {dialog.StartTime:yyyy-MM-dd HH:mm:ss}\n" +
+                    $"Interval: {dialog.IntervalMinutes} minutes\n" +
+                    $"Last: {currentTime.Subtract(interval):yyyy-MM-dd HH:mm:ss}",
+                    "Success",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
         }
     }
 }
