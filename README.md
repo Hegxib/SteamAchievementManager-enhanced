@@ -1,5 +1,7 @@
 # HxB SAM Enhanced 1.0
 
+<img width="453" height="210" alt="Hegxib transp" src="https://github.com/user-attachments/assets/07fe9bfe-f99b-4447-8f10-616c9e996fb0" />
+
 **Enhanced Steam Achievement Manager** - A powerful, feature-rich fork of the original Steam Achievement Manager with modern improvements and quality-of-life enhancements.
 
 ## 🎮 About
@@ -37,11 +39,6 @@ This enhanced version includes all original SAM functionality plus:
 - **Launch Queue** - Launch multiple selected games with a progress dialog
 - **Launch Random** - Randomly pick and launch one game from your SELECTED list
 - **Launch This Only** - Quick-launch individual games from the context menu
-
-### 🎨 Modern UI
-- **Updated Branding** - Clean, modern interface with HxB branding
-- **Quick Access Buttons** - Direct access to support, socials, and important information
-- **Improved Visual Feedback** - Better status indicators and progress displays
 
 ---
 
