@@ -20,6 +20,11 @@
  *    distribution.
  */
 
+/* Enhanced Features - Copyright (c) 2025 HEGXIB (hegxib.me)
+ * Added: RequestGlobalAchievementPercentages, GetAchievementAchievedPercent.
+ * See LICENSE.txt for full enhanced features copyright and usage terms.
+ */
+
 using System;
 using System.Runtime.InteropServices;
 using SAM.API.Interfaces;

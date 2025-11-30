@@ -20,6 +20,11 @@
  *    distribution.
  */
 
+/* Enhanced Features - Copyright (c) 2025 HEGXIB (hegxib.me)
+ * Smart distribution system, realistic unlock timing, and auto-unlock features.
+ * See LICENSE.txt for full enhanced features copyright and usage terms.
+ */
+
 using System;
 using System.Windows.Forms;
 

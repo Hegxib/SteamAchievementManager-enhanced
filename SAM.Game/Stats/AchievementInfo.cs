@@ -20,6 +20,11 @@
  *    distribution.
  */
 
+/* Enhanced Features - Copyright (c) 2025 HEGXIB (hegxib.me)
+ * Added: GlobalPercentUnlocked, ScheduledUnlockTime for intelligent system.
+ * See LICENSE.txt for full enhanced features copyright and usage terms.
+ */
+
 using System;
 using System.Windows.Forms;
 
