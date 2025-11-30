@@ -199,6 +199,7 @@ Dual license - Original SAM (zlib) + Enhanced features by HEGXIB. See [LICENSE.t
 **Website:** [x.hegxib.me](https://x.hegxib.me)
 
 ---
+[Contact](https://hegxib.me/contact) The Developer for Inquiries & [Legal](https://mail.google.com/mail/u/0/#inbox?compose=CllgCJZWxJjqZGQVsdLqgvBjJDLQHJzhNHMwNvltBtrjwvZrGtTgGCFZmwZBlLBbzpLMTzlgpPL)
 
 Made by [**HEGXIB**](https://x.hegxib.me) | Enhanced 2025  
 Visit [hegxib.me](https://hegxib.me) | All Socials: [x.hegxib.me](https://x.hegxib.me)
