@@ -1,11 +1,13 @@
 ================================================================================
-HxB SAM ENHANCED - LICENSE AND COPYRIGHT NOTICE
+HxB SAM Enhanced - License
 ================================================================================
 
-This software consists of TWO parts with SEPARATE ownership and protection:
+This software builds upon the original Steam Achievement Manager (SAM) by 
+Rick (gibbed) with significant enhancements by HEGXIB. Both parts are provided
+freely for personal use.
 
 ================================================================================
-PART 1: ORIGINAL SAM (Base Framework)
+Original SAM - Base Framework
 ================================================================================
 
 zlib License
@@ -34,136 +36,73 @@ freely, subject to the following restrictions:
 Original Repository: https://github.com/gibbed/SteamAchievementManager
 
 ================================================================================
-PART 2: ENHANCED FEATURES & INTELLIGENT SYSTEMS (Proprietary Innovation)
+Enhanced Features - Intelligent Systems
 ================================================================================
 
 Copyright (c) 2025 HEGXIB (hegxib.me | x.hegxib.me)
-All Rights Reserved for Enhanced Features
 
-PROTECTED INTELLECTUAL PROPERTY:
+The enhanced features are provided 'as-is', without any express or implied
+warranty. In no event will HEGXIB be held liable for any damages arising 
+from the use of these enhancements.
 
-The following features, systems, algorithms, and implementations are the 
-exclusive intellectual property of HEGXIB and constitute original, innovative 
-work that does NOT exist in the original SAM or any other achievement manager:
+These enhancements represent original work and innovation. The following 
+features and systems were created specifically for HxB SAM Enhanced:
 
-1. INTELLIGENT ACHIEVEMENT SYSTEM
-   - Steam Global Statistics Integration
-   - Real-time global achievement percentage fetching and display
-   - Achievement sorting by global completion rates (Steam-like ordering)
-   - "% of Players" column with live API data synchronization
-   - Automatic achievement ordering matching Steam's native interface
+• Intelligent Achievement System - Steam global statistics integration, 
+  achievement sorting by completion rates, "% of Players" column
 
-2. REALISTIC UNLOCK TIMING ALGORITHM (Patent-Pending Concept)
-   - Exponential scaling formula based on achievement rarity
-   - Smart distribution system with automatic time calculation
-   - Realistic unlock intervals: 85% = 15min, 0.1% = 100+ hours
-   - Mathematical difficulty time calculation using exponential curves
-   - Rarity-based weighting system with normalized distribution
-   - Algorithmic formula: time = baseTime × e^(k × rarityScore)
+• Realistic Unlock Timing - Exponential scaling algorithm that makes common 
+  achievements unlock quickly (~15min) and rare ones take longer (~100+ hours)
 
-3. AUTO-UNLOCK SYSTEM
-   - Background monitoring and automatic achievement unlocking
-   - Scheduled unlock time management and persistence
-   - Real-time clock-based trigger system
-   - Silent background processing without user intervention
-   - Integration with callback timer for seamless execution
+• Auto-Unlock System - Background monitoring that automatically unlocks 
+  achievements at their scheduled times
 
-4. SMART AUTO-CLOSE TIMER INTEGRATION
-   - Persistent countdown timer with state saving/restoration
-   - Automatic duration calculation from remaining time
-   - Visual countdown display in window title
-   - Silent auto-close without user confirmation
-   - Session state management across app restarts
-   - Auto-sync with smart distribution system
+• Smart Auto-Close Timer - Persistent countdown timer with automatic 
+  integration into the unlock scheduling system
 
-5. BULK OPERATIONS & AUTOMATION
-   - Bulk Set Times dialog with intelligent defaults
-   - Automatic mode detection (auto-close timer integration)
-   - Smart distribution as default behavior
-   - Apply to All / Selected achievements management
-   - Manual override options with fixed intervals
+• Bulk Operations - Smart distribution dialog with automatic mode detection
 
-6. GAME MANAGEMENT ENHANCEMENTS
-   - Select All / Clear All functionality
-   - Persistent game selection with automatic saving/restoration
-   - Integrated playtime display from Steam local files
-   - Enhanced context menu with quick actions
-   - Launch Random from Selected functionality
+• Game Management - Select All/Clear All, persistent selections, playtime 
+  display, Launch Random from Selected
 
-7. USER INTERFACE IMPROVEMENTS
-   - Dynamic instruction labels based on context
-   - Auto-mode visual indicators
-   - Enhanced list view with custom columns
-   - Real-time UI updates during background operations
-   - Improved visual feedback and status indicators
+• UI Improvements - Enhanced context menus, real-time updates, visual indicators
 
-8. TECHNICAL IMPLEMENTATIONS
-   - PlaytimeReader for Steam local file parsing
-   - Global achievement percentage API wrapper
-   - Exponential distribution calculation engine
-   - Background scheduled unlock monitoring system
-   - Timer state persistence system
-   - Achievement info data structure enhancements
+Permission is granted to use these enhanced features for personal purposes,
+subject to the following friendly restrictions:
 
-USAGE TERMS FOR ENHANCED FEATURES:
+1. Please give credit where it's due - if you use or build upon these 
+   enhancements, a mention of HEGXIB and a link back to the enhanced repo 
+   (https://github.com/Hegxib/SteamAchievementManager-enhanced) would be 
+   appreciated.
 
-1. ATTRIBUTION REQUIREMENT (MANDATORY):
-   Any use, modification, distribution, or derivative work of the enhanced 
-   features MUST include clear, visible attribution to HEGXIB with a link 
-   to the original enhanced repository and website (hegxib.me).
+2. Don't claim you created these features - be honest about the origin of 
+   the intelligent systems and algorithms. These took time and creativity 
+   to develop!
 
-2. NO CLAIMING OWNERSHIP:
-   You may NOT claim the enhanced features, algorithms, or concepts as your 
-   own work. You may NOT remove or alter this copyright notice.
+3. Modified versions should be clearly marked - if you make changes, let 
+   people know it's your modified version, not the original enhanced edition.
 
-3. DERIVATIVE WORKS:
-   If you create derivative works using these enhanced features, you MUST:
-   - Clearly state they are based on HxB SAM Enhanced by HEGXIB
-   - Include a link to: https://github.com/Hegxib/SteamAchievementManager-enhanced
-   - Include a link to: https://hegxib.me or https://x.hegxib.me
-   - NOT misrepresent the origin of the intelligent systems
+4. Commercial use needs a chat - if you want to use these features in a 
+   commercial product, please reach out via hegxib.me or x.hegxib.me to 
+   discuss. Personal use is totally free!
 
-4. COMMERCIAL USE:
-   Commercial use of the enhanced features requires explicit written 
-   permission from HEGXIB. Contact via hegxib.me or x.hegxib.me.
-
-5. NO WARRANTY:
-   The enhanced features are provided "AS-IS" without warranty of any kind.
-   HEGXIB is not liable for any damages arising from use of this software.
-
-6. MODIFICATIONS:
-   You may modify the enhanced features for personal use, but distribution 
-   of modified versions requires attribution as specified above.
-
-7. PATENTS AND TRADE SECRETS:
-   The algorithms, formulas, and methods described herein may be subject to
-   patent applications or trade secret protection. Unauthorized commercial
-   use may constitute intellectual property infringement.
-
-ENFORCEMENT:
-
-Violation of these terms, including but not limited to:
-- Removing attribution
-- Claiming ownership of enhanced features
-- Commercial use without permission
-- Misrepresenting the origin of the work
-
-May result in legal action to protect HEGXIB's intellectual property rights.
+5. This notice stays with the code - please don't remove or alter this 
+   copyright notice when redistributing.
 
 ================================================================================
 
-SUMMARY:
+In Summary:
 
-- Original SAM framework: Copyright Rick (gibbed) - zlib license
-- Enhanced features & systems: Copyright (c) 2025 HEGXIB - All Rights Reserved
-- When using this software, BOTH copyrights and attributions MUST be maintained
+Both the original SAM and these enhancements are provided freely for personal
+use. Please respect both Rick's original work and HEGXIB's enhancements by 
+giving credit where appropriate.
 
-For questions, permissions, or licensing inquiries:
-- Website: https://hegxib.me
-- Socials: https://x.hegxib.me
-- Donate: https://ko-fi.com/hegxib
+Questions, suggestions, or just want to say hi?
+• Website: https://hegxib.me
+• All Socials: https://x.hegxib.me
+• Support Development: https://ko-fi.com/hegxib
 
 ================================================================================
-Last Updated: November 30, 2025
-Version: HxB SAM Enhanced 1.0
+HxB SAM Enhanced 1.0 - November 30, 2025
+Making achievement management realistic, intelligent, and effortless
 ================================================================================

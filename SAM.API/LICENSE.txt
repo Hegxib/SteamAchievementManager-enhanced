@@ -1,3 +1,15 @@
+================================================================================
+HxB SAM Enhanced - License
+================================================================================
+
+This software builds upon the original Steam Achievement Manager (SAM) by 
+Rick (gibbed) with significant enhancements by HEGXIB. Both parts are provided
+freely for personal use.
+
+================================================================================
+Original SAM - Base Framework
+================================================================================
+
 zlib License
 
 Copyright (c) 2024 Rick (rick 'at' gibbed 'dot' us)
@@ -20,3 +32,77 @@ freely, subject to the following restrictions:
 
 3. This notice may not be removed or altered from any source
    distribution.
+
+Original Repository: https://github.com/gibbed/SteamAchievementManager
+
+================================================================================
+Enhanced Features - Intelligent Systems
+================================================================================
+
+Copyright (c) 2025 HEGXIB (hegxib.me | x.hegxib.me)
+
+The enhanced features are provided 'as-is', without any express or implied
+warranty. In no event will HEGXIB be held liable for any damages arising 
+from the use of these enhancements.
+
+These enhancements represent original work and innovation. The following 
+features and systems were created specifically for HxB SAM Enhanced:
+
+• Intelligent Achievement System - Steam global statistics integration, 
+  achievement sorting by completion rates, "% of Players" column
+
+• Realistic Unlock Timing - Exponential scaling algorithm that makes common 
+  achievements unlock quickly (~15min) and rare ones take longer (~100+ hours)
+
+• Auto-Unlock System - Background monitoring that automatically unlocks 
+  achievements at their scheduled times
+
+• Smart Auto-Close Timer - Persistent countdown timer with automatic 
+  integration into the unlock scheduling system
+
+• Bulk Operations - Smart distribution dialog with automatic mode detection
+
+• Game Management - Select All/Clear All, persistent selections, playtime 
+  display, Launch Random from Selected
+
+• UI Improvements - Enhanced context menus, real-time updates, visual indicators
+
+Permission is granted to use these enhanced features for personal purposes,
+subject to the following friendly restrictions:
+
+1. Please give credit where it's due - if you use or build upon these 
+   enhancements, a mention of HEGXIB and a link back to the enhanced repo 
+   (https://github.com/Hegxib/SteamAchievementManager-enhanced) would be 
+   appreciated.
+
+2. Don't claim you created these features - be honest about the origin of 
+   the intelligent systems and algorithms. These took time and creativity 
+   to develop!
+
+3. Modified versions should be clearly marked - if you make changes, let 
+   people know it's your modified version, not the original enhanced edition.
+
+4. Commercial use needs a chat - if you want to use these features in a 
+   commercial product, please reach out via hegxib.me or x.hegxib.me to 
+   discuss. Personal use is totally free!
+
+5. This notice stays with the code - please don't remove or alter this 
+   copyright notice when redistributing.
+
+================================================================================
+
+In Summary:
+
+Both the original SAM and these enhancements are provided freely for personal
+use. Please respect both Rick's original work and HEGXIB's enhancements by 
+giving credit where appropriate.
+
+Questions, suggestions, or just want to say hi?
+• Website: https://hegxib.me
+• All Socials: https://x.hegxib.me
+• Support Development: https://ko-fi.com/hegxib
+
+================================================================================
+HxB SAM Enhanced 1.0 - November 30, 2025
+Making achievement management realistic, intelligent, and effortless
+================================================================================
