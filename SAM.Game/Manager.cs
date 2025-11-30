@@ -511,6 +511,15 @@ namespace SAM.Game
             bool wantLocked = this._DisplayLockedOnlyButton.Checked == true;
             bool wantUnlocked = this._DisplayUnlockedOnlyButton.Checked == true;
 
+            // Request global achievement percentages (async - may take a moment)
+            this._SteamClient.SteamUserStats.RequestGlobalAchievementPercentages();
+            
+            // Give Steam a moment to populate the global stats cache
+            System.Threading.Thread.Sleep(100);
+
+            // Collect all achievements first for sorting
+            var achievementsList = new List<Stats.AchievementInfo>();
+
             foreach (var def in this._AchievementDefinitions)
             {
                 if (string.IsNullOrEmpty(def.Id) == true)
@@ -545,6 +554,12 @@ namespace SAM.Game
                     }
                 }
 
+                // Get global achievement percentage
+                if (!this._SteamClient.SteamUserStats.GetAchievementAchievedPercent(def.Id, out float globalPercent))
+                {
+                    globalPercent = -1; // Unknown
+                }
+
                 Stats.AchievementInfo info = new()
                 {
                     Id = def.Id,
@@ -557,14 +572,44 @@ namespace SAM.Game
                     Permission = def.Permission,
                     Name = def.Name,
                     Description = def.Description,
+                    GlobalPercentUnlocked = globalPercent,
                 };
 
+                achievementsList.Add(info);
+            }
+
+            // Sort by global percentage (highest to lowest) - most common achievements first
+            // If global percentages are available, sort by them; otherwise keep original order
+            int validPercentCount = achievementsList.Count(a => a.GlobalPercentUnlocked >= 0);
+            
+            if (validPercentCount > 0)
+            {
+                // Sort by global percentage (highest to lowest)
+                achievementsList.Sort((a, b) => 
+                {
+                    // Put unknown (-1) at the end
+                    if (a.GlobalPercentUnlocked < 0 && b.GlobalPercentUnlocked < 0) return 0;
+                    if (a.GlobalPercentUnlocked < 0) return 1;
+                    if (b.GlobalPercentUnlocked < 0) return -1;
+                    return b.GlobalPercentUnlocked.CompareTo(a.GlobalPercentUnlocked);
+                });
+                
+                System.Diagnostics.Debug.WriteLine($"Sorted {achievementsList.Count} achievements by global %, {validPercentCount} have valid percentages");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"No global percentages available, keeping original order for {achievementsList.Count} achievements");
+            }
+
+            // Now add them to the list view in sorted order
+            foreach (var info in achievementsList)
+            {
                 ListViewItem item = new()
                 {
-                    Checked = isAchieved,
+                    Checked = info.IsAchieved,
                     Tag = info,
                     Text = info.Name,
-                    BackColor = (def.Permission & 3) == 0 ? Color.Black : Color.FromArgb(64, 0, 0),
+                    BackColor = (info.Permission & 3) == 0 ? Color.Black : Color.FromArgb(64, 0, 0),
                 };
 
                 info.Item = item;
@@ -579,17 +624,29 @@ namespace SAM.Game
                     item.SubItems.Add(info.Description);
                 }
 
-                // Display scheduled time if set, otherwise actual unlock time
+                // Display scheduled time if set, otherwise actual unlock time with global %
                 if (info.ScheduledUnlockTime.HasValue)
                 {
                     item.SubItems.Add($"⏰ {info.ScheduledUnlockTime.Value:yyyy-MM-dd HH:mm:ss}");
                     item.BackColor = Color.FromArgb(32, 32, 64); // Blue tint for scheduled
                 }
+                else if (info.UnlockTime.HasValue)
+                {
+                    item.SubItems.Add(info.UnlockTime.Value.ToString());
+                }
                 else
                 {
-                    item.SubItems.Add(info.UnlockTime.HasValue == true
-                        ? info.UnlockTime.Value.ToString()
-                        : "");
+                    item.SubItems.Add("");
+                }
+
+                // Add global percentage as a subitem
+                if (info.GlobalPercentUnlocked >= 0)
+                {
+                    item.SubItems.Add($"{info.GlobalPercentUnlocked:F1}%");
+                }
+                else
+                {
+                    item.SubItems.Add("");
                 }
 
                 info.ImageIndex = 0;
@@ -825,6 +882,9 @@ namespace SAM.Game
                 CheckAutoCloseTimer();
             }
             
+            // Check for scheduled achievement unlocks
+            CheckScheduledUnlocks();
+            
             this._CallbackTimer.Enabled = true;
         }
 
@@ -891,6 +951,55 @@ namespace SAM.Game
                 result += $"{seconds}s";
 
             return result.Trim();
+        }
+
+        private void CheckScheduledUnlocks()
+        {
+            try
+            {
+                var now = DateTime.Now;
+                bool anyUnlocked = false;
+
+                // Check all items in the list view for scheduled unlocks
+                foreach (ListViewItem item in this._AchievementListView.Items)
+                {
+                    if (item.Tag is Stats.AchievementInfo info)
+                    {
+                        // If achievement has a scheduled time and it's time to unlock
+                        if (info.ScheduledUnlockTime.HasValue && 
+                            !info.IsAchieved && 
+                            now >= info.ScheduledUnlockTime.Value)
+                        {
+                            // Unlock the achievement
+                            if (this._SteamClient.SteamUserStats.SetAchievement(info.Id, true))
+                            {
+                                info.IsAchieved = true;
+                                info.UnlockTime = now;
+                                info.ScheduledUnlockTime = null; // Clear schedule after unlock
+                                
+                                // Update the item
+                                item.Checked = true;
+                                item.SubItems[2].Text = now.ToString();
+                                item.BackColor = (info.Permission & 3) == 0 ? Color.Black : Color.FromArgb(64, 0, 0);
+                                
+                                anyUnlocked = true;
+                                
+                                System.Diagnostics.Debug.WriteLine($"Auto-unlocked achievement: {info.Name} at {now:HH:mm:ss}");
+                            }
+                        }
+                    }
+                }
+
+                // If any achievements were unlocked, enable the Store button
+                if (anyUnlocked)
+                {
+                    this._StoreButton.Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Scheduled unlock check error: {ex.Message}");
+            }
         }
 
         private void OnRefresh(object sender, EventArgs e)
@@ -1172,7 +1281,19 @@ namespace SAM.Game
 
         private void OnBulkSetUnlockTime(object sender, EventArgs e)
         {
-            using (var dialog = new BulkUnlockTimeDialog())
+            // Calculate remaining time from auto-close timer if enabled
+            int? remainingMinutes = null;
+            if (this._AutoCloseEnabled && this._CountdownSeconds > 0)
+            {
+                int elapsed = (int)(DateTime.Now - this._CountdownStartTime).TotalSeconds;
+                int remaining = this._CountdownSeconds - elapsed;
+                if (remaining > 0)
+                {
+                    remainingMinutes = remaining / 60; // Convert to minutes
+                }
+            }
+            
+            using (var dialog = new BulkUnlockTimeDialog(remainingMinutes))
             {
                 if (dialog.ShowDialog(this) != DialogResult.OK)
                 {
@@ -1226,32 +1347,116 @@ namespace SAM.Game
                     return;
                 }
 
-                // Apply sequential unlock times
-                var currentTime = dialog.StartTime;
-                var interval = TimeSpan.FromMinutes(dialog.IntervalMinutes);
-
                 this._AchievementListView.BeginUpdate();
-                foreach (var info in achievements)
-                {
-                    info.ScheduledUnlockTime = currentTime;
-                    
-                    // Update the display
-                    if (info.Item != null)
-                    {
-                        info.Item.SubItems[2].Text = $"⏰ {currentTime:yyyy-MM-dd HH:mm:ss}";
-                        info.Item.BackColor = Color.FromArgb(32, 32, 64); // Blue tint for scheduled
-                    }
 
-                    currentTime = currentTime.Add(interval);
+                if (dialog.UseSmartDistribution)
+                {
+                    // Realistic Smart Distribution: Scale unlock times based on achievement rarity
+                    // Example: 85% achievement = 15 min, 0.1% achievement = 100+ hours
+                    // Formula uses exponential scale where rarer achievements take exponentially longer
+                    
+                    var totalDuration = TimeSpan.FromMinutes(dialog.TotalDurationMinutes);
+                    
+                    // Calculate "difficulty time" for each achievement based on rarity
+                    // Using logarithmic scale: time increases exponentially as rarity decreases
+                    var difficultyTimes = new List<double>();
+                    
+                    foreach (var ach in achievements)
+                    {
+                        double percent = ach.GlobalPercentUnlocked >= 0 ? ach.GlobalPercentUnlocked : 50.0; // Default to 50% if unknown
+                        
+                        // Clamp percent to reasonable bounds
+                        percent = Math.Max(0.01, Math.Min(100.0, percent));
+                        
+                        // Calculate difficulty time using exponential scaling
+                        // Formula: time = baseTime * e^(k * (1 - percent/100))
+                        // Where k controls the exponential curve steepness
+                        
+                        // Map percentage to difficulty score (0 to 1, where 1 = rarest)
+                        double rarityScore = 1.0 - (percent / 100.0);
+                        
+                        // Exponential scaling factor (adjust for desired curve steepness)
+                        // k=5 gives good spread: 85% ≈ 15min, 0.1% ≈ 100h
+                        double k = 5.0;
+                        double difficultyMultiplier = Math.Exp(k * rarityScore);
+                        
+                        difficultyTimes.Add(difficultyMultiplier);
+                    }
+                    
+                    // Normalize difficulty times to fit within total duration
+                    double totalDifficultyTime = difficultyTimes.Sum();
+                    double scale = totalDuration.TotalMinutes / totalDifficultyTime;
+                    
+                    // Assign unlock times cumulatively
+                    double cumulativeMinutes = 0;
+                    for (int i = 0; i < achievements.Count; i++)
+                    {
+                        var info = achievements[i];
+                        
+                        // Add small random variation (±5%) for realism
+                        Random rng = new Random(info.Id.GetHashCode());
+                        double variation = 0.95 + (rng.NextDouble() * 0.1); // 0.95 to 1.05
+                        
+                        double allocatedMinutes = difficultyTimes[i] * scale * variation;
+                        cumulativeMinutes += allocatedMinutes;
+                        
+                        var scheduled = dialog.StartTime.AddMinutes(cumulativeMinutes);
+                        info.ScheduledUnlockTime = scheduled;
+
+                        // Update the display
+                        if (info.Item != null)
+                        {
+                            info.Item.SubItems[2].Text = $"⏰ {scheduled:yyyy-MM-dd HH:mm:ss}";
+                            info.Item.BackColor = Color.FromArgb(32, 32, 64); // Blue tint for scheduled
+                        }
+                    }
                 }
+                else
+                {
+                    // Apply sequential unlock times
+                    var currentTime = dialog.StartTime;
+                    var interval = TimeSpan.FromMinutes(dialog.IntervalMinutes);
+
+                    foreach (var info in achievements)
+                    {
+                        info.ScheduledUnlockTime = currentTime;
+
+                        // Update the display
+                        if (info.Item != null)
+                        {
+                            info.Item.SubItems[2].Text = $"⏰ {currentTime:yyyy-MM-dd HH:mm:ss}";
+                            info.Item.BackColor = Color.FromArgb(32, 32, 64); // Blue tint for scheduled
+                        }
+
+                        currentTime = currentTime.Add(interval);
+                    }
+                }
+                // Determine last scheduled time for reporting
+                DateTime lastScheduled = DateTime.MinValue;
+                if (dialog.UseSmartDistribution)
+                {
+                    lastScheduled = achievements.Max(a => a.ScheduledUnlockTime ?? DateTime.MinValue);
+                }
+                else
+                {
+                    // previous logic left currentTime at last + interval
+                    // compute last scheduled by subtracting one interval
+                    var interval = TimeSpan.FromMinutes(dialog.IntervalMinutes);
+                    lastScheduled = achievements.Count > 0 ? achievements.Last().ScheduledUnlockTime ?? DateTime.MinValue : DateTime.MinValue;
+                }
+
                 this._AchievementListView.EndUpdate();
+
+                string intervalInfo = dialog.UseSmartDistribution
+                    ? $"Total duration: {dialog.TotalDurationMinutes} minutes"
+                    : $"Interval: {dialog.IntervalMinutes} minutes";
 
                 MessageBox.Show(
                     this,
                     $"Set scheduled unlock times for {achievements.Count} achievement(s).\n\n" +
                     $"Starting at: {dialog.StartTime:yyyy-MM-dd HH:mm:ss}\n" +
-                    $"Interval: {dialog.IntervalMinutes} minutes\n" +
-                    $"Last: {currentTime.Subtract(interval):yyyy-MM-dd HH:mm:ss}",
+                    intervalInfo + "\n" +
+                    $"Last: { (lastScheduled == DateTime.MinValue ? "N/A" : lastScheduled.ToString("yyyy-MM-dd HH:mm:ss")) }",
                     "Success",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);

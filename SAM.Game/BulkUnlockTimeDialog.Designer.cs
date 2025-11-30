@@ -48,7 +48,7 @@ namespace SAM.Game
             this._InstructionLabel.Name = "_InstructionLabel";
             this._InstructionLabel.Size = new System.Drawing.Size(460, 40);
             this._InstructionLabel.TabIndex = 0;
-            this._InstructionLabel.Text = "Set unlock times for multiple achievements sequentially. Each achievement will be scheduled at the specified interval after the previous one.";
+            this._InstructionLabel.Text = "Smart distribution (default): Achievements unlock realistically based on rarity. Common achievements unlock quickly, rare ones take longer. Manual interval option available below.";
             // 
             // _StartTimeLabel
             // 
@@ -99,6 +99,38 @@ namespace SAM.Game
             0,
             0});
             // 
+            // _UseSmartCheck
+            // 
+            this._UseSmartCheck = new System.Windows.Forms.CheckBox();
+            this._UseSmartCheck.AutoSize = true;
+            this._UseSmartCheck.Location = new System.Drawing.Point(15, 120);
+            this._UseSmartCheck.Name = "_UseSmartCheck";
+            this._UseSmartCheck.Size = new System.Drawing.Size(240, 17);
+            this._UseSmartCheck.TabIndex = 5;
+            this._UseSmartCheck.Text = "Smart distribute across total duration:";
+            this._UseSmartCheck.UseVisualStyleBackColor = true;
+            // 
+            // _TotalDurationNumeric
+            // 
+            this._TotalDurationNumeric = new System.Windows.Forms.NumericUpDown();
+            this._TotalDurationNumeric.Location = new System.Drawing.Point(260, 118);
+            this._TotalDurationNumeric.Maximum = new decimal(new int[] {14400,0,0,0});
+            this._TotalDurationNumeric.Minimum = new decimal(new int[] {1,0,0,0});
+            this._TotalDurationNumeric.Name = "_TotalDurationNumeric";
+            this._TotalDurationNumeric.Size = new System.Drawing.Size(80, 20);
+            this._TotalDurationNumeric.TabIndex = 6;
+            this._TotalDurationNumeric.Value = new decimal(new int[] {60,0,0,0});
+            // 
+            // _TotalMinutesLabel
+            // 
+            this._TotalMinutesLabel = new System.Windows.Forms.Label();
+            this._TotalMinutesLabel.AutoSize = true;
+            this._TotalMinutesLabel.Location = new System.Drawing.Point(346, 120);
+            this._TotalMinutesLabel.Name = "_TotalMinutesLabel";
+            this._TotalMinutesLabel.Size = new System.Drawing.Size(50, 13);
+            this._TotalMinutesLabel.TabIndex = 7;
+            this._TotalMinutesLabel.Text = "minutes";
+            // 
             // _MinutesLabel
             // 
             this._MinutesLabel.AutoSize = true;
@@ -112,7 +144,7 @@ namespace SAM.Game
             // 
             this._ApplyToAllRadio.AutoSize = true;
             this._ApplyToAllRadio.Checked = true;
-            this._ApplyToAllRadio.Location = new System.Drawing.Point(15, 120);
+            this._ApplyToAllRadio.Location = new System.Drawing.Point(15, 150);
             this._ApplyToAllRadio.Name = "_ApplyToAllRadio";
             this._ApplyToAllRadio.Size = new System.Drawing.Size(160, 17);
             this._ApplyToAllRadio.TabIndex = 6;
@@ -123,7 +155,7 @@ namespace SAM.Game
             // _ApplyToSelectedRadio
             // 
             this._ApplyToSelectedRadio.AutoSize = true;
-            this._ApplyToSelectedRadio.Location = new System.Drawing.Point(15, 143);
+            this._ApplyToSelectedRadio.Location = new System.Drawing.Point(15, 173);
             this._ApplyToSelectedRadio.Name = "_ApplyToSelectedRadio";
             this._ApplyToSelectedRadio.Size = new System.Drawing.Size(200, 17);
             this._ApplyToSelectedRadio.TabIndex = 7;
@@ -132,7 +164,7 @@ namespace SAM.Game
             // 
             // _OKButton
             // 
-            this._OKButton.Location = new System.Drawing.Point(316, 185);
+            this._OKButton.Location = new System.Drawing.Point(316, 215);
             this._OKButton.Name = "_OKButton";
             this._OKButton.Size = new System.Drawing.Size(75, 23);
             this._OKButton.TabIndex = 8;
@@ -142,7 +174,7 @@ namespace SAM.Game
             // 
             // _CancelButton
             // 
-            this._CancelButton.Location = new System.Drawing.Point(397, 185);
+            this._CancelButton.Location = new System.Drawing.Point(397, 215);
             this._CancelButton.Name = "_CancelButton";
             this._CancelButton.Size = new System.Drawing.Size(75, 23);
             this._CancelButton.TabIndex = 9;
@@ -153,7 +185,7 @@ namespace SAM.Game
             // _ExampleLabel
             // 
             this._ExampleLabel.ForeColor = System.Drawing.Color.Gray;
-            this._ExampleLabel.Location = new System.Drawing.Point(12, 165);
+            this._ExampleLabel.Location = new System.Drawing.Point(12, 195);
             this._ExampleLabel.Name = "_ExampleLabel";
             this._ExampleLabel.Size = new System.Drawing.Size(460, 17);
             this._ExampleLabel.TabIndex = 10;
@@ -163,7 +195,10 @@ namespace SAM.Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 220);
+            this.ClientSize = new System.Drawing.Size(484, 260);
+            this.Controls.Add(this._TotalMinutesLabel);
+            this.Controls.Add(this._TotalDurationNumeric);
+            this.Controls.Add(this._UseSmartCheck);
             this.Controls.Add(this._ExampleLabel);
             this.Controls.Add(this._CancelButton);
             this.Controls.Add(this._OKButton);
@@ -188,12 +223,15 @@ namespace SAM.Game
 
         #endregion
 
-        private System.Windows.Forms.Label _InstructionLabel;
+    private System.Windows.Forms.Label _InstructionLabel;
         private System.Windows.Forms.Label _StartTimeLabel;
         private System.Windows.Forms.DateTimePicker _StartTimePicker;
         private System.Windows.Forms.Label _IntervalLabel;
         private System.Windows.Forms.NumericUpDown _IntervalNumeric;
         private System.Windows.Forms.Label _MinutesLabel;
+    private System.Windows.Forms.CheckBox _UseSmartCheck;
+    private System.Windows.Forms.NumericUpDown _TotalDurationNumeric;
+    private System.Windows.Forms.Label _TotalMinutesLabel;
         private System.Windows.Forms.RadioButton _ApplyToAllRadio;
         private System.Windows.Forms.RadioButton _ApplyToSelectedRadio;
         private System.Windows.Forms.Button _OKButton;

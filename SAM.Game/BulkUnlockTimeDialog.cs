@@ -30,13 +30,34 @@ namespace SAM.Game
         public DateTime StartTime { get; private set; }
         public int IntervalMinutes { get; private set; }
         public bool ApplyToAll { get; private set; }
+        public bool UseSmartDistribution { get; private set; }
+        public int TotalDurationMinutes { get; private set; }
 
-        public BulkUnlockTimeDialog()
+        public BulkUnlockTimeDialog(int? autoCloseMinutes = null)
         {
             InitializeComponent();
             this._StartTimePicker.Value = DateTime.Now;
             this._IntervalNumeric.Value = 5;
             this._ApplyToAllRadio.Checked = true;
+            
+            // Default to Smart distribution with auto-close timer if available
+            if (autoCloseMinutes.HasValue && autoCloseMinutes.Value > 0)
+            {
+                this._UseSmartCheck.Checked = true;
+                this._TotalDurationNumeric.Value = autoCloseMinutes.Value;
+                this._UseSmartCheck.Enabled = false; // Lock to auto mode
+                this._TotalDurationNumeric.Enabled = false; // Lock to auto-close time
+                
+                // Update instruction to show auto mode
+                double hours = autoCloseMinutes.Value / 60.0;
+                this._InstructionLabel.Text = 
+                    $"AUTO MODE: Using remaining auto-close time ({hours:F1}h). Achievements will unlock realistically based on rarity across this time period. Common achievements unlock quickly, rare ones take most of the time.";
+            }
+            else
+            {
+                this._UseSmartCheck.Checked = true; // Default to Smart
+                this._TotalDurationNumeric.Value = 60; // default 1 hour
+            }
         }
 
         private void OnOK(object sender, EventArgs e)
@@ -44,6 +65,8 @@ namespace SAM.Game
             this.StartTime = this._StartTimePicker.Value;
             this.IntervalMinutes = (int)this._IntervalNumeric.Value;
             this.ApplyToAll = this._ApplyToAllRadio.Checked;
+            this.UseSmartDistribution = this._UseSmartCheck.Checked;
+            this.TotalDurationMinutes = (int)this._TotalDurationNumeric.Value;
 
             this.DialogResult = DialogResult.OK;
             this.Close();

@@ -51,6 +51,7 @@
             this._AchievementNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._AchievementDescriptionColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._AchievementUnlockTimeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this._AchievementGlobalPercentColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._AchievementsToolStrip = new System.Windows.Forms.ToolStrip();
             this._LockAllButton = new System.Windows.Forms.ToolStripButton();
             this._InvertAllButton = new System.Windows.Forms.ToolStripButton();
@@ -230,7 +231,8 @@
             this._AchievementListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this._AchievementNameColumnHeader,
             this._AchievementDescriptionColumnHeader,
-            this._AchievementUnlockTimeColumnHeader});
+            this._AchievementUnlockTimeColumnHeader,
+            this._AchievementGlobalPercentColumnHeader});
             this._AchievementListView.ContextMenuStrip = this._AchievementContextMenu;
             this._AchievementListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this._AchievementListView.ForeColor = System.Drawing.Color.White;
@@ -242,7 +244,7 @@
             this._AchievementListView.Name = "_AchievementListView";
             this._AchievementListView.Size = new System.Drawing.Size(682, 277);
             this._AchievementListView.SmallImageList = this._AchievementImageList;
-            this._AchievementListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this._AchievementListView.Sorting = System.Windows.Forms.SortOrder.None;
             this._AchievementListView.TabIndex = 4;
             this._AchievementListView.UseCompatibleStateImageBehavior = false;
             this._AchievementListView.View = System.Windows.Forms.View.Details;
@@ -262,6 +264,11 @@
             // 
             this._AchievementUnlockTimeColumnHeader.Text = "Unlock Time";
             this._AchievementUnlockTimeColumnHeader.Width = 160;
+            // 
+            // _AchievementGlobalPercentColumnHeader
+            // 
+            this._AchievementGlobalPercentColumnHeader.Text = "% of Players";
+            this._AchievementGlobalPercentColumnHeader.Width = 80;
             // 
             // _AchievementsToolStrip
             // 
@@ -475,7 +482,8 @@
         private System.Windows.Forms.ToolStripButton _DisplayLockedOnlyButton;
         private System.Windows.Forms.ToolStripLabel _MatchingStringLabel;
         private System.Windows.Forms.ToolStripTextBox _MatchingStringTextBox;
-        private System.Windows.Forms.ColumnHeader _AchievementUnlockTimeColumnHeader;
+    private System.Windows.Forms.ColumnHeader _AchievementUnlockTimeColumnHeader;
+    private System.Windows.Forms.ColumnHeader _AchievementGlobalPercentColumnHeader;
         private System.Windows.Forms.CheckBox _EnableStatsEditingCheckBox;
         private System.Windows.Forms.ContextMenuStrip _AchievementContextMenu;
         private System.Windows.Forms.ToolStripMenuItem _SetUnlockTimeMenuItem;
