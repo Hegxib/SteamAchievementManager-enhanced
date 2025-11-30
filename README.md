@@ -125,8 +125,8 @@ If you find HxB SAM Enhanced useful, consider supporting its development:
 
 ```powershell
 # Clone the repository
-git clone https://github.com/yourusername/SteamAchievementManager.git
-cd SteamAchievementManager
+git clone https://github.com/Hegxib/SteamAchievementManager-enhanced.git
+cd SteamAchievementManager-enhanced
 
 # Build using PowerShell script
 .\rebuild.ps1
@@ -159,7 +159,7 @@ The compiled executables will be in the `bin\` directory:
 
 ## 📄 License
 
-This project inherits its license from the original Steam Achievement Manager. See [LICENSE.txt](LICENSE.txt) for details.
+Dual license - Original SAM (zlib) + Enhanced features by HEGXIB. See [LICENSE.txt](LICENSE.txt) for details.
 
 ---
 
