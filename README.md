@@ -200,7 +200,7 @@ Dual license - Original SAM (zlib) + Enhanced features by HEGXIB. See [LICENSE.t
 
 ---
 
-Made with ❤️ by **HEGXIB** | Enhanced 2025  
+Made by [**HEGXIB**](https://x.hegxib.me) | Enhanced 2025  
 Visit [hegxib.me](https://hegxib.me) | All Socials: [x.hegxib.me](https://x.hegxib.me)
 
 </div>
