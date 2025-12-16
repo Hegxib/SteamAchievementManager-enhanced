@@ -11,7 +11,17 @@
 *.sln.docstates
 **/Properties/launchSettings.json
 private/
+
+# HxB SAM Enhanced - Build outputs and releases
 upload/
+bin/
+release/
+*.zip
+
+# Code signing certificate files (NEVER commit these!)
+*.pfx
+*.p12
+*.cer
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -242,9 +252,21 @@ ClientBin/
 *.dbmdl
 *.dbproj.schemaview
 *.jfm
-*.pfx
 *.publishsettings
 orleans.codegen.cs
+
+# HxB SAM Enhanced - Cache directories (user-specific)
+ImageCache/
+SelectedCache/
+DoneCache/
+
+# HxB SAM Enhanced - User data files (don't commit personal game lists)
+selected_games.json
+done_games.json
+
+# HxB SAM Enhanced - Temporary files
+README_NEW.md
+*.md.backup
 
 # Including strong name files can present a security risk
 # (https://github.com/github/gitignore/pull/2483#issue-259490424)

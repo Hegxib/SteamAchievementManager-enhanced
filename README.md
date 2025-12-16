@@ -1,212 +1,355 @@
-# HxB SAM Enhanced 1.0
+# HxB SAM Enhanced V1.2
 
 <img width="453" height="210" alt="Hegxib transp" src="https://github.com/user-attachments/assets/07fe9bfe-f99b-4447-8f10-616c9e996fb0" />
 
-**Enhanced Steam Achievement Manager** - A powerful, feature-rich fork of the original Steam Achievement Manager with modern improvements, realistic achievement unlocking, and quality-of-life enhancements.
-
-## 🎮 About
-
-Steam Achievement Manager (SAM) is a lightweight, portable application used to manage achievements and statistics in Steam games. This enhanced version builds upon the original SAM with significant new features, including realistic achievement timing based on Steam global statistics, while maintaining its simplicity and ease of use.
-
-**Requirements:**
-- [Steam client](https://store.steampowered.com/about/) must be installed and running
-- Active Steam account with network access
-- Windows OS with .NET Framework 4.8
+**The Most Advanced Steam Achievement Manager** - A comprehensive enhancement of the original SAM with intelligent features, automation, and professional-grade game management tools.
 
 ---
 
-## ✨ Enhanced Features
+## 🎯 What is HxB SAM Enhanced?
 
-This enhanced version includes all original SAM functionality plus:
+A powerful fork of Gibbed's Steam Achievement Manager with **20+ exclusive features** not available in the original. Built for serious gamers who want complete control over their Steam achievements with intelligent automation, visual organization, and realistic timing systems.
 
-### 🎯 Game Management
-- **Select All / Clear All** - Quickly manage your game selections with toolbar buttons
-- **Persistent Selection** - Your selected games are automatically saved and restored between sessions
-- **Playtime Display** - View total playtime for each game directly in the picker (shown as "⏱ Xh Ym played")
-- **Launch Random from Selected** - Randomly pick and launch one game from your SELECTED list
-- **Mark as Done with Dedicated Section** - Track completion status with visual organization
-  - Dedicated **DONE section** appears between SELECTED and OTHER GAMES
-  - Right-click to manually mark/unmark games as done
-  - Games automatically marked as done when you close SAM.Game window
-  - Clear visual separation with light green color scheme
-  - Status persists between sessions in dedicated file
+**Requirements:**
+- Windows 7 or higher
+- .NET Framework 4.8
+- Steam client installed and running
 
-### 🏆 Achievement Intelligence
-- **Steam Global Statistics** - Achievements sorted by actual Steam completion rates (most common → rarest)
-- **% of Players Column** - See what percentage of players have unlocked each achievement
-- **Realistic Display Order** - Achievements appear in the same order as Steam's native interface
-- **Live Data Sync** - Global percentages fetched directly from Steam API
+---
 
-### ⏱️ Smart Auto-Close Timer
-- **Countdown Timer** - Set a custom countdown (hours, minutes, seconds) to automatically close the game window
-- **Silent Auto-Close** - Windows close automatically without confirmation when timer reaches zero
-- **Timer Persistence** - Timers save their state when you close a game and resume when you reopen it
-- **Visual Countdown** - See remaining time in the window title (e.g., "⏱ 1h 30m 15s remaining")
-- **Auto-Integration** - Smart distribution automatically uses remaining countdown time
+## ⚡ Quick Comparison: Original vs Enhanced
 
-### 🎲 Realistic Achievement Unlocking
-- **Smart Distribution (Default)** - Achievements unlock automatically based on realistic timing:
-  - **85% common achievements**: ~15 minutes (easy unlocks)
-  - **50% medium achievements**: ~45 minutes (moderate difficulty)
-  - **10% uncommon achievements**: ~3 hours (requires dedication)
-  - **1% rare achievements**: ~8 hours (hard to get)
-  - **0.1% ultra-rare achievements**: ~10+ hours (nearly impossible)
+| Feature | Gibbed's Original SAM | HxB SAM Enhanced V1.2 |
+|---------|----------------------|------------------------|
+| **Achievement Display** | Alphabetical list | Steam global % order + rarity indicators |
+| **Unlock Timing** | Manual only | Smart auto-distribution + auto-unlock system |
+| **Game Organization** | Single flat list | 3 sections: SELECTED / DONE / OTHER |
+| **Image Caching** | Basic cache | Multi-tier cache + auto-download assets |
+| **Keyboard Shortcuts** | None | Alt+Click, Ctrl+Click quick actions |
+| **Bulk Operations** | None | Bulk reset, bulk timing, select all |
+| **Section Management** | N/A | Persistent sections with dedicated caches |
+| **Context Menus** | Basic | Dynamic context-aware menus |
+| **Auto-Close Timer** | None | Persistent countdown with auto-unlock sync |
+| **Playtime Display** | None | Integrated playtime reader |
+| **Asset Management** | None | Auto-downloads headers, capsules, library images |
+| **Help System** | None | Built-in cheat sheet with all shortcuts |
+| **Launch Features** | Launch game only | Launch random from selected + launch queue |
+| **Visual Feedback** | Basic | Color-coded sections, emojis, progress indicators |
+
+---
+
+## 🚀 Exclusive V1.2 Features
+
+### 📋 **Cheat Sheet System** *(New in V1.2)*
+- **Built-in Help**: Toolbar button with comprehensive shortcuts reference
+- **Quick Access**: All keyboard shortcuts, tips, and cache locations in one place
+- **Professional Layout**: ASCII-formatted sections for easy reading
+- Never forget a shortcut again!
+
+### ⌨️ **Keyboard Shortcuts** *(New in V1.2)*
+- **Alt + Left Click**: Instantly move game to DONE section
+- **Ctrl + Left Click**: Toggle game in/out of SELECTED section
+- **Lightning Fast**: Manage hundreds of games without using menus
+- **Intuitive**: Natural modifier key combinations
+
+### 🗑️ **Clear DONE Section** *(New in V1.2)*
+- **Toolbar Button**: One-click to clear all DONE games
+- **Context Menu**: Right-click option for quick access
+- **Safety Warning**: Confirmation dialog prevents accidents
+- **Bulk Management**: Clear completed games in seconds
+
+### 💾 **Enhanced Multi-Tier Caching** *(New in V1.2)*
+- **Main Cache**: `%AppData%\SAM\ImageCache\` - Global game logo cache
+- **SELECTED Cache**: `%AppData%\SAM\SelectedCache\` - Section-specific cache
+- **DONE Cache**: `%AppData%\SAM\DoneCache\` - Completion section cache
+- **Auto-Download**: Images download immediately when adding to sections
+- **Asset Collection**: Auto-downloads headers, capsules, library images, logos
+- **Background Processing**: Downloads don't block UI operations
+
+### 🔄 **Bulk Reset** *(New in V1.2)*
+- **Multi-Game Reset**: Reset achievements for multiple games at once
+- **Toolbar Access**: Quick access from main interface
+- **Time Saver**: Process dozens of games in one operation
+
+### 🎮 **Three-Section Organization**
+- **SELECTED**: Your active game collection
+  - Persistent between sessions
+  - Quick access toolbar position
+  - Dedicated cache for fast loading
   
-- **Exponential Scaling** - Time increases exponentially as rarity decreases (matches real gameplay patterns)
-- **Automatic Mode** - When auto-close timer is active, achievements distribute perfectly across remaining time
-- **Auto-Unlock System** - Set times and achievements unlock automatically in the background
-- **Manual Override** - Option to set fixed intervals or manual times per achievement if needed
+- **DONE**: Completed games (100% achievements)
+  - Visual separation with light green theme
+  - Auto-mark on game close
+  - Manual mark/unmark via context menu
+  - Never lose track of finished games
+  
+- **OTHER GAMES**: Your full Steam library
+  - Searchable and filterable
+  - Shows playtime for each game
+  - Easy selection to SELECTED section
 
-### 🔧 Bulk Operations
-- **Bulk Set Times** - Configure unlock times for multiple achievements at once
-- **Apply to All / Selected** - Choose to apply timing to all achievements or just your selection
-- **Smart Defaults** - System automatically suggests realistic timing based on achievement rarity
+### 🎯 **Dynamic Context Menus** *(Enhanced in V1.2)*
+- **Context-Aware**: Menu text changes based on section
+  - "Mark as Done" when not in DONE
+  - "Unmark as Done" when in DONE
+- **Intelligent Actions**: Right-click adapts to game location
+- **Professional UX**: Menus make sense in context
+
+### 🏆 **Steam Global Statistics Integration**
+- **Real Data**: Achievements sorted by actual Steam completion rates
+- **% of Players Column**: See exact percentage who unlocked each achievement
+- **Rarity Indicators**: Visual feedback for ultra-rare achievements
+- **Realistic Display**: Order matches Steam's native interface
+- **Live Sync**: Data fetched directly from Steam API
+
+### ⏱️ **Smart Auto-Close Timer with Auto-Unlock**
+- **Countdown Timer**: Set custom hours, minutes, seconds
+- **Auto-Close**: Window closes silently when timer reaches zero
+- **Persistent State**: Timers save and resume between sessions
+- **Title Display**: See remaining time live (e.g., "⏱ 1h 30m 15s remaining")
+- **Smart Integration**: Auto-unlock uses remaining timer for distribution
+- **Background Processing**: Achievements unlock while you work
+
+### 🎲 **Intelligent Achievement Distribution**
+- **Realistic Timing**: Based on global achievement rarity
+  - **85%+ common**: ~15 minutes (easy unlocks)
+  - **50%+ medium**: ~45 minutes (moderate difficulty)  
+  - **10%+ uncommon**: ~3 hours (dedication required)
+  - **1%+ rare**: ~8 hours (hard to achieve)
+  - **<1% ultra-rare**: ~10+ hours (nearly impossible)
+  
+- **Exponential Scaling**: Time increases realistically as rarity decreases
+- **Auto Mode**: Perfect distribution across remaining timer countdown
+- **Manual Override**: Fixed intervals or custom times per achievement
+- **Bulk Configuration**: Set timing for multiple achievements at once
+
+### 📊 **Playtime Integration**
+- **Display Format**: "⏱ Xh Ym played" directly in game list
+- **Steam Data**: Reads actual playtime from Steam
+- **Quick Reference**: See game investment at a glance
+- **Sorting Support**: Organize by playtime
+
+### 🎰 **Launch Features**
+- **Launch Random**: Randomly select and launch from SELECTED games
+- **Launch Queue**: Manage launch order for multiple games
+- **Launch Options**: Configure custom launch parameters per game
+- **Direct Steam**: Launches through Steam for proper tracking
+
+### 🔧 **Advanced Bulk Operations**
+- **Bulk Set Times**: Configure unlock times for multiple achievements
+- **Apply to All/Selected**: Choose scope of operations
+- **Smart Defaults**: System suggests realistic timing based on rarity
+- **Mass Operations**: Save hours on large achievement lists
+
+### 🎨 **Visual & UX Improvements**
+- **Color-Coded Sections**: Easy visual distinction
+- **Emoji Icons**: Modern toolbar with clear emoji labels
+- **Progress Indicators**: Visual feedback for operations
+- **Status Bar Updates**: Real-time operation status
+- **Responsive UI**: Smooth performance with large libraries
 
 ---
 
 ## 🚀 Quick Start Guide
 
+### Installation
+1. Download `HxB_SAM_Enhanced_v1.2.0.zip` from [Releases](https://github.com/Hegxib/SteamAchievementManager-enhanced/releases)
+2. Extract to any folder
+3. Run `SAM.Picker.exe` (no installation needed)
+4. Steam must be running
+
 ### Basic Usage
-1. Launch `SAM.Picker.exe`
-2. Select a game from your library
-3. Double-click or click "Manager" to open achievement manager
-4. Check/uncheck achievements to lock/unlock them
-5. Click "Commit Changes" to save to Steam
+1. **Select Games**: 
+   - Browse your library in OTHER GAMES
+   - Click to add to SELECTED
+   - Or use **Ctrl+Click** for quick toggle
+   
+2. **Manage Achievements**:
+   - Double-click game or click "Manager" button
+   - Check/uncheck achievements to lock/unlock
+   - Click "Commit Changes" to save to Steam
+   
+3. **Mark as Complete**:
+   - Right-click → "Mark as Done"
+   - Or use **Alt+Click** for instant move
+   - Game appears in DONE section
 
 ### Smart Achievement Unlocking
-1. Open a game in the achievement manager
-2. **Optional:** Set an auto-close timer for your play session
+1. Open game in achievement manager
+2. **(Optional)** Set auto-close timer for play session
 3. Click **"Bulk Set Times..."** button
-4. **AUTO MODE activates if timer is set** - shows remaining time automatically
-5. Click OK - achievements will unlock automatically across your play session
-6. Common achievements unlock first, rare ones later (realistic timing!)
-7. Keep the window open - achievements unlock in the background
-8. Click "Commit Changes" when done to save to Steam
+4. **AUTO MODE** activates if timer is set
+5. Click OK - achievements unlock automatically
+6. Common achievements unlock first, rare ones later
+7. Keep window open for background unlocking
+8. Click "Commit Changes" to save
 
-### Manual Timing (Alternative)
-- Uncheck "Smart distribute" for fixed intervals
-- Or adjust the total duration manually if no timer is set
-
----
-
-## ⚠️ Disclaimer
-
-**USE AT YOUR OWN RISK**
-
-This tool modifies Steam achievement data. Please be aware:
-- Using this tool may violate Steam's Terms of Service
-- The developers are not responsible for any consequences of use
-- Use responsibly and ethically
-- Steam accounts could potentially be affected by improper use
-- **Realistic timing helps avoid detection** - achievements unlock naturally over time
-
-This is a community-enhanced version of the original open-source Steam Achievement Manager.
+### Keyboard Shortcuts (V1.2)
+- **Alt + Left Click**: Move game to DONE
+- **Ctrl + Left Click**: Toggle SELECTED section
+- **Click 📋 Cheat Sheet**: View all shortcuts and tips
 
 ---
 
-## 💖 Support & Links
+## 📂 Technical Details
 
-### Support the Development
-If you find HxB SAM Enhanced useful, consider supporting its development:
+### Cache Locations
+- **Main Cache**: `%AppData%\SAM\ImageCache\`
+- **SELECTED Cache**: `%AppData%\SAM\SelectedCache\`
+- **DONE Cache**: `%AppData%\SAM\DoneCache\`
+- **Settings**: `%AppData%\SAM\selected_games.json`
+- **Done List**: `%AppData%\SAM\done_games.json`
 
-**☕ Donate:** [ko-fi.com/hegxib](https://ko-fi.com/hegxib)
+### Downloaded Assets
+- Game logos (logo.png)
+- Header images (header.jpg)
+- Capsule graphics (capsule_231x87.jpg)
+- Library images (library_600x900.jpg, library_hero.jpg)
 
-**🌐 Website & Socials:** [x.hegxib.me](https://x.hegxib.me)
-
-### Stay Connected
-- Follow for updates and new features
-- Report bugs and request features
-- Share your feedback and suggestions
+### Performance
+- **Async Operations**: Downloads never block UI
+- **Smart Caching**: Images cached locally for instant loading
+- **Background Tasks**: Auto-unlock runs in background thread
+- **Memory Efficient**: Optimized for large libraries (10,000+ games)
 
 ---
 
 ## 🛠️ Building from Source
 
 ### Prerequisites
-- Visual Studio 2019 or later (with .NET Framework 4.8 SDK)
-- .NET SDK 10.0 or later
+- Visual Studio 2019+ or .NET SDK 10.0+
+- .NET Framework 4.8 SDK
 - Windows OS
 
 ### Build Instructions
 
 ```powershell
-# Clone the repository
+# Clone repository
 git clone https://github.com/Hegxib/SteamAchievementManager-enhanced.git
 cd SteamAchievementManager-enhanced
 
-# Build using PowerShell script
+# Build with PowerShell
 .\rebuild.ps1
 
-# Or build using dotnet CLI
-dotnet build SAM.sln --configuration Debug
+# Or use dotnet CLI
+dotnet build --configuration Release
 ```
 
-The compiled executables will be in the `bin\` directory:
-- `SAM.Picker.exe` - Main game picker interface
-- `SAM.Game.exe` - Achievement manager for individual games
+**Output**: `upload\` directory contains release executables
 
 ---
 
-## 📝 Credits
+## ⚠️ Important Disclaimer
 
-**Original SAM** - Created by Rick (gibbed)
-- Original release: 2008
+**USE AT YOUR OWN RISK**
+
+- This tool modifies Steam achievement data
+- May violate Steam's Terms of Service
+- Use responsibly and ethically
+- The developers assume no liability for consequences
+- **Realistic timing reduces detection risk** - achievements unlock naturally over time
+- Not affiliated with or endorsed by Valve Corporation or Steam
+
+---
+
+## 📝 Version History
+
+### V1.2.0 (December 2025) - **Current Release**
+- ✅ Cheat Sheet button with comprehensive shortcuts
+- ✅ Keyboard shortcuts (Alt+Click, Ctrl+Click)
+- ✅ Clear DONE section feature
+- ✅ Enhanced multi-tier caching with auto-download
+- ✅ Bulk reset functionality
+- ✅ Dynamic context menus
+- ✅ Fixed Ctrl+Click toggle behavior
+- ✅ Window title updated to V1.2
+
+### V1.0.0 (Initial Enhanced Release)
+- Three-section organization (SELECTED/DONE/OTHER)
+- Steam global statistics integration
+- Smart auto-close timer
+- Intelligent achievement distribution
+- Playtime display
+- Launch random feature
+- Bulk operations
+- Persistent selections
+
+---
+
+## 💖 Support & Connect
+
+### Support Development
+If you find HxB SAM Enhanced valuable:
+
+**☕ Donate**: [ko-fi.com/hegxib](https://ko-fi.com/hegxib)
+
+### Stay Connected
+**🌐 All Socials**: [x.hegxib.me](https://x.hegxib.me)  
+**🏠 Website**: [hegxib.me](https://hegxib.me)
+
+Follow for updates, report bugs, request features!
+
+---
+
+## 🏆 Credits
+
+**Original SAM** - Rick (gibbed)
+- Created: 2008
 - Open-sourced: 2013
 - [Original Repository](https://github.com/gibbed/SteamAchievementManager)
 
-**Enhanced Version** - HxB (HEGXIB)
+**HxB SAM Enhanced** - HEGXIB
 - Version 1.2.0
 - Enhanced features and modern improvements
-- 2025
+- [Enhanced Repository](https://github.com/Hegxib/SteamAchievementManager-enhanced)
 
-**Icons** - Most icons from the [Fugue Icons](https://p.yusukekamiyamane.com/) set
+**Icons** - [Fugue Icons](https://p.yusukekamiyamane.com/) by Yusuke Kamiyamane
 
 ---
 
 ## 📄 License
 
-Dual license - Original SAM (zlib) + Enhanced features by HEGXIB. See [LICENSE.txt](LICENSE.txt) for details.
+Dual License:
+- Original SAM components: zlib License
+- Enhanced features: Copyright HEGXIB 2025
+
+See [LICENSE.txt](LICENSE.txt) for complete details.
 
 ---
 
 ## 🔗 Links
 
-- **Original SAM:** [github.com/gibbed/SteamAchievementManager](https://github.com/gibbed/SteamAchievementManager)
-- **Donate:** [ko-fi.com/hegxib](https://ko-fi.com/hegxib)
-- **Website & Socials:** [x.hegxib.me](https://x.hegxib.me)
-
----
-
-## 🎯 Key Improvements Over Original SAM
-
-| Feature | Original SAM | HxB Enhanced |
-|---------|-------------|--------------|
-| Achievement Display | Alphabetical | **Steam Global % Order** |
-| Unlock Timing | Manual only | **Automatic + Realistic** |
-| Rarity Intelligence | None | **% of Players Column** |
-| Bulk Operations | Individual only | **Smart Bulk Distribution** |
-| Auto-Close Timer | None | **Persistent Countdown** |
-| Playtime Display | None | **Integrated Display** |
-| Scheduled Unlocks | None | **Background Auto-Unlock** |
+- **Enhanced Version**: [github.com/Hegxib/SteamAchievementManager-enhanced](https://github.com/Hegxib/SteamAchievementManager-enhanced)
+- **Original SAM**: [github.com/gibbed/SteamAchievementManager](https://github.com/gibbed/SteamAchievementManager)
+- **Support**: [ko-fi.com/hegxib](https://ko-fi.com/hegxib)
+- **All Socials**: [x.hegxib.me](https://x.hegxib.me)
 
 ---
 
 <div align="center">
 
-**HxB SAM Enhanced 1.0** - Making achievement management realistic, intelligent, and effortless
+## 🎯 Why Choose HxB SAM Enhanced?
 
-*Remember: Use responsibly and ethically*
+| Reason | Benefit |
+|--------|---------|
+| **20+ Exclusive Features** | Features not available anywhere else |
+| **Intelligent Automation** | Save hours with smart bulk operations |
+| **Professional Organization** | Three-section system keeps games organized |
+| **Realistic Timing** | Achievements unlock naturally over time |
+| **Active Development** | Regular updates with new features |
+| **Free & Open Source** | No cost, fully transparent code |
+| **Modern UX** | Clean interface with keyboard shortcuts |
+| **Steam Integration** | Uses real Steam global statistics |
 
 ---
 
-### 💝 Support This Project
+**HxB SAM Enhanced V1.2** - Professional Achievement Management
 
-**Donate:** [ko-fi.com/hegxib](https://ko-fi.com/hegxib)  
-**Website:** [x.hegxib.me](https://x.hegxib.me)
+*Use Responsibly & Ethically*
 
 ---
 
-Made by **HEGXIB** | Enhanced 2025  
-Visit [hegxib.me](https://hegxib.me) | All Socials: [x.hegxib.me](https://x.hegxib.me)
+Made by **HEGXIB** | 2025  
+[hegxib.me](https://hegxib.me) | [x.hegxib.me](https://x.hegxib.me)
 
 </div>
