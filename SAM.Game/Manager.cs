@@ -134,6 +134,9 @@ namespace SAM.Game
                                 this._CountdownSeconds = countdownSeconds;
                                 this._CountdownStartTime = startTime;
                                 this._AutoCloseEnabled = true;
+                                
+                                // Recalculate all scheduled achievement times based on remaining time
+                                RecalculateScheduledTimesForRemainingTime(remainingSeconds);
                             }
                             else
                             {
@@ -212,6 +215,10 @@ namespace SAM.Game
                         stream.Write(e.Result, 0, e.Result.Length);
                         bitmap = new(stream);
                     }
+                    
+                    // Save to cache
+                    var iconName = info.IsAchieved == true ? info.IconNormal : info.IconLocked;
+                    SaveAchievementIconToCache(iconName, e.Result);
                 }
                 catch (Exception)
                 {
@@ -244,9 +251,21 @@ namespace SAM.Game
             var info = this._IconQueue[0];
             this._IconQueue.RemoveAt(0);
 
+            // Check cache first
+            var iconName = info.IsAchieved == true ? info.IconNormal : info.IconLocked;
+            var cachedIcon = LoadAchievementIconFromCache(iconName);
+            
+            if (cachedIcon != null)
+            {
+                // Use cached icon
+                this.AddAchievementIcon(info, cachedIcon);
+                this._AchievementListView.Update();
+                this.DownloadNextIcon(); // Continue to next
+                return;
+            }
 
             this._IconDownloader.DownloadDataAsync(
-                new Uri(_($"https://cdn.steamstatic.com/steamcommunity/public/images/apps/{this._GameId}/{(info.IsAchieved == true ? info.IconNormal : info.IconLocked)}")),
+                new Uri(_($"https://cdn.steamstatic.com/steamcommunity/public/images/apps/{this._GameId}/{iconName}")),
                 info);
         }
 
@@ -295,7 +314,7 @@ namespace SAM.Game
                     return false;
                 }
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
@@ -624,6 +643,9 @@ namespace SAM.Game
                     item.SubItems.Add(info.Description);
                 }
 
+                // Restore scheduled times from saved offsets
+                LoadScheduledTimeForAchievement(info);
+
                 // Display scheduled time if set, otherwise actual unlock time with global %
                 if (info.ScheduledUnlockTime.HasValue)
                 {
@@ -908,12 +930,31 @@ namespace SAM.Game
                     // Countdown reached! Close the window silently
                     this._AutoCloseEnabled = false;
                     SaveTimerState(); // This will delete the timer file
+                    
+                    // Create marker file to indicate auto-timer triggered close
+                    CreateAutoCloseMarker();
+                    
                     this.Close();
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Auto-close timer error: {ex.Message}");
+            }
+        }
+
+        private void CreateAutoCloseMarker()
+        {
+            try
+            {
+                string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string samFolder = Path.Combine(appData, "SAM");
+                string markerFile = Path.Combine(samFolder, $"autoclosed_{this._GameId}.marker");
+                File.WriteAllText(markerFile, DateTime.Now.ToString("o"));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating auto-close marker: {ex.Message}");
             }
         }
 
@@ -990,9 +1031,13 @@ namespace SAM.Game
                     }
                 }
 
-                // If any achievements were unlocked, enable the Store button
+                // If any achievements were unlocked, commit changes immediately
                 if (anyUnlocked)
                 {
+                    if (this._SteamClient.SteamUserStats.StoreStats())
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Auto-committed {DateTime.Now:HH:mm:ss}");
+                    }
                     this._StoreButton.Enabled = true;
                 }
             }
@@ -1304,10 +1349,10 @@ namespace SAM.Game
 
                 if (dialog.ApplyToAll)
                 {
-                    // Apply to all displayed achievements
+                    // Apply to all displayed achievements (skip already unlocked)
                     foreach (ListViewItem item in this._AchievementListView.Items)
                     {
-                        if (item.Tag is Stats.AchievementInfo info && (info.Permission & 3) == 0)
+                        if (item.Tag is Stats.AchievementInfo info && (info.Permission & 3) == 0 && !info.IsAchieved)
                         {
                             achievements.Add(info);
                         }
@@ -1315,10 +1360,10 @@ namespace SAM.Game
                 }
                 else
                 {
-                    // Apply to selected achievements only
+                    // Apply to selected achievements only (skip already unlocked)
                     foreach (ListViewItem item in this._AchievementListView.SelectedItems)
                     {
-                        if (item.Tag is Stats.AchievementInfo info && (info.Permission & 3) == 0)
+                        if (item.Tag is Stats.AchievementInfo info && (info.Permission & 3) == 0 && !info.IsAchieved)
                         {
                             achievements.Add(info);
                         }
@@ -1351,54 +1396,165 @@ namespace SAM.Game
 
                 if (dialog.UseSmartDistribution)
                 {
-                    // Realistic Smart Distribution: Scale unlock times based on achievement rarity
-                    // Example: 85% achievement = 15 min, 0.1% achievement = 100+ hours
-                    // Formula uses exponential scale where rarer achievements take exponentially longer
+                    // ENHANCED REALISTIC DISTRIBUTION SYSTEM
+                    // Uses achievement rarity + intelligent patterns for maximum realism
                     
                     var totalDuration = TimeSpan.FromMinutes(dialog.TotalDurationMinutes);
+                    var safetyBuffer = TimeSpan.FromSeconds(3);
+                    var effectiveDuration = totalDuration - safetyBuffer;
                     
-                    // Calculate "difficulty time" for each achievement based on rarity
-                    // Using logarithmic scale: time increases exponentially as rarity decreases
-                    var difficultyTimes = new List<double>();
+                    // Step 1: Detect story/sequential achievements
+                    var storyAchievements = new List<int>(); // Indices of story achievements
+                    var normalAchievements = new List<int>(); // Indices of other achievements
                     
-                    foreach (var ach in achievements)
-                    {
-                        double percent = ach.GlobalPercentUnlocked >= 0 ? ach.GlobalPercentUnlocked : 50.0; // Default to 50% if unknown
-                        
-                        // Clamp percent to reasonable bounds
-                        percent = Math.Max(0.01, Math.Min(100.0, percent));
-                        
-                        // Calculate difficulty time using exponential scaling
-                        // Formula: time = baseTime * e^(k * (1 - percent/100))
-                        // Where k controls the exponential curve steepness
-                        
-                        // Map percentage to difficulty score (0 to 1, where 1 = rarest)
-                        double rarityScore = 1.0 - (percent / 100.0);
-                        
-                        // Exponential scaling factor (adjust for desired curve steepness)
-                        // k=5 gives good spread: 85% ≈ 15min, 0.1% ≈ 100h
-                        double k = 5.0;
-                        double difficultyMultiplier = Math.Exp(k * rarityScore);
-                        
-                        difficultyTimes.Add(difficultyMultiplier);
-                    }
-                    
-                    // Normalize difficulty times to fit within total duration
-                    double totalDifficultyTime = difficultyTimes.Sum();
-                    double scale = totalDuration.TotalMinutes / totalDifficultyTime;
-                    
-                    // Assign unlock times cumulatively
-                    double cumulativeMinutes = 0;
                     for (int i = 0; i < achievements.Count; i++)
                     {
-                        var info = achievements[i];
+                        var ach = achievements[i];
+                        string nameLower = ach.Name.ToLower();
+                        string descLower = (ach.Description ?? "").ToLower();
                         
-                        // Add small random variation (±5%) for realism
+                        // Detect story markers
+                        bool isStory = nameLower.Contains("chapter") || nameLower.Contains("level") ||
+                                     nameLower.Contains("stage") || nameLower.Contains("mission") ||
+                                     nameLower.Contains("act ") || nameLower.Contains("part ") ||
+                                     descLower.Contains("complete") || descLower.Contains("finish") ||
+                                     descLower.Contains("beat") || descLower.Contains("defeat boss");
+                        
+                        if (isStory)
+                            storyAchievements.Add(i);
+                        else
+                            normalAchievements.Add(i);
+                    }
+                    
+                    // Step 2: Calculate difficulty scores for all achievements
+                    // Using tiered rarity brackets for realistic time distribution
+                    var achievementData = new List<(int index, double percent, double difficultyWeight, bool isStory)>();
+                    
+                    foreach (var idx in storyAchievements)
+                    {
+                        var ach = achievements[idx];
+                        double percent = Math.Max(0.01, Math.Min(100.0, ach.GlobalPercentUnlocked >= 0 ? ach.GlobalPercentUnlocked : 50.0));
+                        double difficultyWeight = GetDifficultyWeight(percent, isStoryAchievement: true);
+                        achievementData.Add((idx, percent, difficultyWeight, true));
+                    }
+                    
+                    foreach (var idx in normalAchievements)
+                    {
+                        var ach = achievements[idx];
+                        double percent = Math.Max(0.01, Math.Min(100.0, ach.GlobalPercentUnlocked >= 0 ? ach.GlobalPercentUnlocked : 50.0));
+                        double difficultyWeight = GetDifficultyWeight(percent, isStoryAchievement: false);
+                        achievementData.Add((idx, percent, difficultyWeight, false));
+                    }
+                    
+                    // Step 3: Sort achievements by difficulty (easy first, hard last)
+                    // But keep story achievements in their original order among themselves
+                    var sortedStory = achievementData.Where(a => a.isStory).OrderBy(a => a.index).ToList();
+                    var sortedNormal = achievementData.Where(a => !a.isStory).OrderBy(a => a.percent).Reverse().ToList(); // High % first
+                    
+                    // Interleave: story achievements stay in order, normal achievements fill gaps
+                    var sortedAchievements = new List<(int index, double percent, double difficultyWeight, bool isStory)>();
+                    
+                    if (sortedStory.Count > 0 && sortedNormal.Count > 0)
+                    {
+                        // Distribute normal achievements between story milestones
+                        int storyIdx = 0;
+                        int normalIdx = 0;
+                        int normalPerStorySegment = Math.Max(1, sortedNormal.Count / (sortedStory.Count + 1));
+                        
+                        while (storyIdx < sortedStory.Count || normalIdx < sortedNormal.Count)
+                        {
+                            // Add some normal achievements
+                            for (int i = 0; i < normalPerStorySegment && normalIdx < sortedNormal.Count; i++)
+                            {
+                                sortedAchievements.Add(sortedNormal[normalIdx++]);
+                            }
+                            
+                            // Add next story achievement
+                            if (storyIdx < sortedStory.Count)
+                            {
+                                sortedAchievements.Add(sortedStory[storyIdx++]);
+                            }
+                        }
+                        
+                        // Add remaining normal achievements at the end
+                        while (normalIdx < sortedNormal.Count)
+                        {
+                            sortedAchievements.Add(sortedNormal[normalIdx++]);
+                        }
+                    }
+                    else
+                    {
+                        // All one type, just combine
+                        sortedAchievements.AddRange(sortedStory);
+                        sortedAchievements.AddRange(sortedNormal);
+                    }
+                    
+                    // Step 4: Define session structure
+                    // Break achievements into realistic play sessions with breaks
+                    double totalMinutes = effectiveDuration.TotalMinutes;
+                    int achievementCount = achievements.Count;
+                    
+                    // Session parameters
+                    double maxSessionLength = Math.Min(180, totalMinutes / 3); // Max 3 hours per session, or divide total by 3
+                    double minBreakBetweenSessions = 60; // At least 1 hour break
+                    double maxBreakBetweenSessions = Math.Min(1440, totalMinutes / 2); // Up to 1 day or half total time
+                    
+                    // Calculate number of sessions needed
+                    int sessionCount = Math.Max(1, (int)Math.Ceiling(totalMinutes / maxSessionLength));
+                    sessionCount = Math.Min(sessionCount, achievementCount); // Can't have more sessions than achievements
+                    
+                    // Step 5: Distribute achievements across sessions
+                    double totalDifficultyWeight = sortedAchievements.Sum(a => a.difficultyWeight);
+                    
+                    // Safety check: prevent division by zero
+                    if (totalDifficultyWeight <= 0)
+                    {
+                        totalDifficultyWeight = sortedAchievements.Count; // Fallback: equal weight for all
+                    }
+                    
+                    double availablePlayTime = totalMinutes - (minBreakBetweenSessions * (sessionCount - 1)); // Subtract break times
+                    availablePlayTime = Math.Max(totalMinutes * 0.5, availablePlayTime); // Ensure at least 50% is play time
+                    
+                    double scale = availablePlayTime / totalDifficultyWeight;
+                    
+                    // Step 6: Assign unlock times with session breaks
+                    double cumulativeMinutes = 0;
+                    int achievementsProcessed = 0;
+                    int achievementsPerSession = Math.Max(1, achievementCount / sessionCount);
+                    
+                    Random sessionRng = new Random(achievements[0].Id.GetHashCode());
+                    
+                    for (int i = 0; i < sortedAchievements.Count; i++)
+                    {
+                        var achData = sortedAchievements[i];
+                        var info = achievements[achData.index];
+                        
+                        // Add random variation (±10% for realism)
                         Random rng = new Random(info.Id.GetHashCode());
-                        double variation = 0.95 + (rng.NextDouble() * 0.1); // 0.95 to 1.05
+                        double variation = 0.90 + (rng.NextDouble() * 0.20);
                         
-                        double allocatedMinutes = difficultyTimes[i] * scale * variation;
+                        // Minimum time between achievements (3-20 minutes based on rarity)
+                        double minInterval = achData.percent >= 85 ? 3 : 
+                                           (achData.percent >= 60 ? 5 : 
+                                           (achData.percent >= 35 ? 8 : 
+                                           (achData.percent >= 20 ? 12 : 15)));
+                        double allocatedMinutes = Math.Max(minInterval, achData.difficultyWeight * scale * variation);
+                        
                         cumulativeMinutes += allocatedMinutes;
+                        
+                        // Check if we should add a session break
+                        achievementsProcessed++;
+                        bool needsBreak = achievementsProcessed % achievementsPerSession == 0 && 
+                                        achievementsProcessed < achievementCount &&
+                                        sessionCount > 1;
+                        
+                        if (needsBreak)
+                        {
+                            // Add break between sessions
+                            double breakDuration = minBreakBetweenSessions + 
+                                                 (sessionRng.NextDouble() * (maxBreakBetweenSessions - minBreakBetweenSessions));
+                            cumulativeMinutes += breakDuration;
+                        }
                         
                         var scheduled = dialog.StartTime.AddMinutes(cumulativeMinutes);
                         info.ScheduledUnlockTime = scheduled;
@@ -1407,7 +1563,7 @@ namespace SAM.Game
                         if (info.Item != null)
                         {
                             info.Item.SubItems[2].Text = $"⏰ {scheduled:yyyy-MM-dd HH:mm:ss}";
-                            info.Item.BackColor = Color.FromArgb(32, 32, 64); // Blue tint for scheduled
+                            info.Item.BackColor = Color.FromArgb(32, 32, 64);
                         }
                     }
                 }
@@ -1447,6 +1603,9 @@ namespace SAM.Game
 
                 this._AchievementListView.EndUpdate();
 
+                // Save scheduled times
+                SaveScheduledTimes();
+
                 string intervalInfo = dialog.UseSmartDistribution
                     ? $"Total duration: {dialog.TotalDurationMinutes} minutes"
                     : $"Interval: {dialog.IntervalMinutes} minutes";
@@ -1462,5 +1621,267 @@ namespace SAM.Game
                     MessageBoxIcon.Information);
             }
         }
+
+        private string GetScheduledTimesFilePath()
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string samFolder = Path.Combine(appData, "SAM");
+            Directory.CreateDirectory(samFolder);
+            return Path.Combine(samFolder, $"scheduled_times_{this._GameId}.txt");
+        }
+
+        private void SaveScheduledTimes()
+        {
+            try
+            {
+                var filePath = GetScheduledTimesFilePath();
+                var now = DateTime.Now;
+                var lines = new List<string>();
+
+                foreach (ListViewItem item in this._AchievementListView.Items)
+                {
+                    if (item.Tag is Stats.AchievementInfo info && info.ScheduledUnlockTime.HasValue && !info.IsAchieved)
+                    {
+                        // Save as minutes offset from now
+                        int offsetMinutes = (int)(info.ScheduledUnlockTime.Value - now).TotalMinutes;
+                        lines.Add($"{info.Id}|{offsetMinutes}");
+                    }
+                }
+
+                File.WriteAllLines(filePath, lines);
+            }
+            catch { }
+        }
+
+        private void RecalculateScheduledTimesForRemainingTime(int remainingSeconds)
+        {
+            try
+            {
+                var filePath = GetScheduledTimesFilePath();
+                if (!File.Exists(filePath)) return;
+
+                var lines = File.ReadAllLines(filePath);
+                if (lines.Length == 0) return;
+
+                // Parse all scheduled achievements with their original offsets
+                var scheduledAchievements = new List<(string id, int originalOffsetMinutes)>();
+                
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('|');
+                    if (parts.Length == 2 && int.TryParse(parts[1], out int offsetMinutes))
+                    {
+                        scheduledAchievements.Add((parts[0], offsetMinutes));
+                    }
+                }
+
+                if (scheduledAchievements.Count == 0) return;
+
+                // Find the original total duration (max offset)
+                int originalTotalMinutes = scheduledAchievements.Max(a => a.originalOffsetMinutes);
+                if (originalTotalMinutes <= 0) return;
+
+                // Calculate new total duration based on remaining time (with 3-second buffer)
+                double remainingMinutes = (remainingSeconds - 3) / 60.0;
+                if (remainingMinutes <= 0) return;
+
+                // Calculate scaling factor
+                double scaleFactor = remainingMinutes / originalTotalMinutes;
+
+                // Scale all offsets proportionally and save back
+                var newLines = new List<string>();
+                foreach (var (id, originalOffset) in scheduledAchievements)
+                {
+                    int newOffset = (int)(originalOffset * scaleFactor);
+                    if (newOffset > 0)
+                    {
+                        newLines.Add($"{id}|{newOffset}");
+                    }
+                }
+
+                File.WriteAllLines(filePath, newLines);
+                
+                System.Diagnostics.Debug.WriteLine($"Recalculated scheduled times: {originalTotalMinutes}min → {remainingMinutes:F1}min (scale: {scaleFactor:F2})");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error recalculating scheduled times: {ex.Message}");
+            }
+        }
+
+        private void LoadScheduledTimeForAchievement(Stats.AchievementInfo info)
+        {
+            try
+            {
+                if (info.IsAchieved) return;
+
+                var filePath = GetScheduledTimesFilePath();
+                if (!File.Exists(filePath)) return;
+
+                var lines = File.ReadAllLines(filePath);
+                var now = DateTime.Now;
+
+                foreach (var line in lines)
+                {
+                    var parts = line.Split('|');
+                    if (parts.Length == 2 && parts[0] == info.Id)
+                    {
+                        if (int.TryParse(parts[1], out int offsetMinutes))
+                        {
+                            // Recalculate time based on current moment
+                            info.ScheduledUnlockTime = now.AddMinutes(offsetMinutes);
+                        }
+                        break;
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private string GetAchievementIconCachePath()
+        {
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var cachePath = Path.Combine(appDataPath, "SAM", "IconCache", this._GameId.ToString());
+            
+            if (!Directory.Exists(cachePath))
+            {
+                Directory.CreateDirectory(cachePath);
+            }
+            
+            // Clean up old cache files if too many (keep last 500 accessed icons per game)
+            CleanupOldIconCache(cachePath, maxFiles: 500);
+            
+            return cachePath;
+        }
+
+        private void CleanupOldIconCache(string cachePath, int maxFiles)
+        {
+            try
+            {
+                var files = new DirectoryInfo(cachePath).GetFiles("*.png");
+                if (files.Length > maxFiles)
+                {
+                    var filesToDelete = files.OrderBy(f => f.LastAccessTime).Take(files.Length - maxFiles);
+                    foreach (var file in filesToDelete)
+                    {
+                        try { file.Delete(); } catch { }
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private Bitmap LoadAchievementIconFromCache(string iconName)
+        {
+            if (string.IsNullOrEmpty(iconName))
+                return null;
+
+            try
+            {
+                var cachePath = GetAchievementIconCachePath();
+                var cacheFile = Path.Combine(cachePath, $"{iconName}.png");
+                
+                if (File.Exists(cacheFile))
+                {
+                    // Validate file size (corrupted files are usually 0 bytes or very small)
+                    var fileInfo = new FileInfo(cacheFile);
+                    if (fileInfo.Length < 50) // Less than 50 bytes is likely corrupted
+                    {
+                        File.Delete(cacheFile);
+                        return null;
+                    }
+                    
+                    using (var stream = new FileStream(cacheFile, FileMode.Open, FileAccess.Read))
+                    {
+                        return new Bitmap(stream);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load icon from cache {iconName}: {ex.Message}");
+                
+                // Delete corrupted cache file
+                try
+                {
+                    var cachePath = GetAchievementIconCachePath();
+                    var cacheFile = Path.Combine(cachePath, $"{iconName}.png");
+                    if (File.Exists(cacheFile))
+                    {
+                        File.Delete(cacheFile);
+                    }
+                }
+                catch { }
+            }
+            
+            return null;
+        }
+
+        private void SaveAchievementIconToCache(string iconName, byte[] data)
+        {
+            if (string.IsNullOrEmpty(iconName) || data == null || data.Length < 50)
+                return;
+
+            try
+            {
+                var cachePath = GetAchievementIconCachePath();
+                var cacheFile = Path.Combine(cachePath, $"{iconName}.png");
+                
+                File.WriteAllBytes(cacheFile, data);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to save icon to cache {iconName}: {ex.Message}");
+            }
+        }
+
+        private double GetDifficultyWeight(double percentUnlocked, bool isStoryAchievement)
+        {
+            // Tiered rarity system for realistic time distribution
+            // Based on how common the achievement is among all players
+            // Updated brackets per user specification
+            
+            double baseWeight;
+            
+            if (percentUnlocked >= 85.0)
+            {
+                // Very Common: Tutorial, first steps (85%+)
+                baseWeight = 1.0;
+            }
+            else if (percentUnlocked >= 60.0)
+            {
+                // Common: Early game, basic objectives (70-60% → 60-84%)
+                baseWeight = 2.0;
+            }
+            else if (percentUnlocked >= 35.0)
+            {
+                // Uncommon: Mid-game content (55-35% → 35-59%)
+                baseWeight = 4.0;
+            }
+            else if (percentUnlocked >= 20.0)
+            {
+                // Rare: Late game, some effort (35-20% → 20-34%)
+                baseWeight = 7.0;
+            }
+            else if (percentUnlocked >= 6.0)
+            {
+                // Very Rare: End game, difficult (15-6% → 6-19%)
+                baseWeight = 12.0;
+            }
+            else
+            {
+                // Ultra Rare: Extremely hard, grindy (5-0.01% → 0.01-5%)
+                baseWeight = 20.0;
+            }
+            
+            // Story achievements slightly easier (get them faster)
+            if (isStoryAchievement)
+            {
+                baseWeight *= 0.75;
+            }
+            
+            return baseWeight;
+        }
     }
 }
+

@@ -24,6 +24,12 @@ This enhanced version includes all original SAM functionality plus:
 - **Persistent Selection** - Your selected games are automatically saved and restored between sessions
 - **Playtime Display** - View total playtime for each game directly in the picker (shown as "⏱ Xh Ym played")
 - **Launch Random from Selected** - Randomly pick and launch one game from your SELECTED list
+- **Mark as Done with Dedicated Section** - Track completion status with visual organization
+  - Dedicated **DONE section** appears between SELECTED and OTHER GAMES
+  - Right-click to manually mark/unmark games as done
+  - Games automatically marked as done when you close SAM.Game window
+  - Clear visual separation with light green color scheme
+  - Status persists between sessions in dedicated file
 
 ### 🏆 Achievement Intelligence
 - **Steam Global Statistics** - Achievements sorted by actual Steam completion rates (most common → rarest)
@@ -149,7 +155,7 @@ The compiled executables will be in the `bin\` directory:
 - [Original Repository](https://github.com/gibbed/SteamAchievementManager)
 
 **Enhanced Version** - HxB (HEGXIB)
-- Version 1.0
+- Version 1.2.0
 - Enhanced features and modern improvements
 - 2025
 
@@ -199,9 +205,8 @@ Dual license - Original SAM (zlib) + Enhanced features by HEGXIB. See [LICENSE.t
 **Website:** [x.hegxib.me](https://x.hegxib.me)
 
 ---
-[Contact](https://hegxib.me/contact) The Developer for Inquiries & [Legal](https://mail.google.com/mail/u/0/#inbox?compose=CllgCJZWxJjqZGQVsdLqgvBjJDLQHJzhNHMwNvltBtrjwvZrGtTgGCFZmwZBlLBbzpLMTzlgpPL)
 
-Made by [**HEGXIB**](https://x.hegxib.me) | Enhanced 2025  
+Made by **HEGXIB** | Enhanced 2025  
 Visit [hegxib.me](https://hegxib.me) | All Socials: [x.hegxib.me](https://x.hegxib.me)
 
 </div>

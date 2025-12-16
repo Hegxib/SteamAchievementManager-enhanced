@@ -45,11 +45,13 @@
             this._FilterDemosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._FilterModsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._FilterJunkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this._CheatSheetButton = new System.Windows.Forms.ToolStripButton();
             this._DonateButton = new System.Windows.Forms.ToolStripButton();
             this._SocialsButton = new System.Windows.Forms.ToolStripButton();
             this._DisclaimerButton = new System.Windows.Forms.ToolStripButton();
             this._GameListView = new SAM.Picker.MyListView();
             this._SelectedListView = new SAM.Picker.MyListView();
+            this._DoneListView = new SAM.Picker.MyListView();
             this._PickerStatusStrip = new System.Windows.Forms.StatusStrip();
             this._PickerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this._DownloadStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -61,10 +63,17 @@
             this._LaunchOneRandomMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._RemoveFromSelectedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._ClearAllSelectionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this._MarkAsDoneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this._ClearDoneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this._ResetAchievementsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._SelectAllButton = new System.Windows.Forms.ToolStripButton();
             this._ClearAllButton = new System.Windows.Forms.ToolStripButton();
+            this._BulkResetButton = new System.Windows.Forms.ToolStripButton();
+            this._ClearDoneButton = new System.Windows.Forms.ToolStripButton();
             this._SelectedHeaderPanel = new System.Windows.Forms.Panel();
             this._SelectedHeaderLabel = new System.Windows.Forms.Label();
+            this._DoneHeaderPanel = new System.Windows.Forms.Panel();
+            this._DoneHeaderLabel = new System.Windows.Forms.Label();
             this._OtherGamesHeaderPanel = new System.Windows.Forms.Panel();
             this._OtherGamesHeaderLabel = new System.Windows.Forms.Label();
             _ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -72,6 +81,7 @@
             this._PickerToolStrip.SuspendLayout();
             this._PickerStatusStrip.SuspendLayout();
             this._SelectedHeaderPanel.SuspendLayout();
+            this._DoneHeaderPanel.SuspendLayout();
             this._OtherGamesHeaderPanel.SuspendLayout();
             this.SuspendLayout();
             //
@@ -109,7 +119,10 @@
             this._FilterDropDownButton,
             this._SelectAllButton,
             this._ClearAllButton,
+            this._BulkResetButton,
+            this._ClearDoneButton,
             new System.Windows.Forms.ToolStripSeparator(),
+            this._CheatSheetButton,
             this._DonateButton,
             this._SocialsButton,
             this._DisclaimerButton});
@@ -188,6 +201,36 @@
             this._ClearAllButton.Text = "Clear All";
             this._ClearAllButton.Click += new System.EventHandler(this.OnClearAll);
             //
+            // _BulkResetButton
+            //
+            this._BulkResetButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this._BulkResetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._BulkResetButton.Name = "_BulkResetButton";
+            this._BulkResetButton.Size = new System.Drawing.Size(75, 22);
+            this._BulkResetButton.Text = "🔄 Bulk Reset";
+            this._BulkResetButton.ToolTipText = "Reset achievements for multiple games";
+            this._BulkResetButton.Click += new System.EventHandler(this.OnBulkReset);
+            //
+            // _ClearDoneButton
+            //
+            this._ClearDoneButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this._ClearDoneButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._ClearDoneButton.Name = "_ClearDoneButton";
+            this._ClearDoneButton.Size = new System.Drawing.Size(75, 22);
+            this._ClearDoneButton.Text = "🗑️ Clear DONE";
+            this._ClearDoneButton.ToolTipText = "Clear all games from DONE section";
+            this._ClearDoneButton.Click += new System.EventHandler(this.OnClearDone);
+            //
+            // _CheatSheetButton
+            //
+            this._CheatSheetButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this._CheatSheetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._CheatSheetButton.Name = "_CheatSheetButton";
+            this._CheatSheetButton.Size = new System.Drawing.Size(85, 22);
+            this._CheatSheetButton.Text = "📋 Cheat Sheet";
+            this._CheatSheetButton.ToolTipText = "View shortcuts and tips";
+            this._CheatSheetButton.Click += new System.EventHandler(this.OnCheatSheetClick);
+            //
             // _DonateButton
             //
             this._DonateButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -260,7 +303,11 @@
             this._LaunchOneRandomMenuItem,
             this._RemoveFromSelectedMenuItem,
             new System.Windows.Forms.ToolStripSeparator(),
-            this._ClearAllSelectionsMenuItem});
+            this._MarkAsDoneMenuItem,
+            this._ResetAchievementsMenuItem,
+            new System.Windows.Forms.ToolStripSeparator(),
+            this._ClearAllSelectionsMenuItem,
+            this._ClearDoneMenuItem});
             this._GameContextMenu.Name = "_GameContextMenu";
             this._GameContextMenu.Size = new System.Drawing.Size(200, 120);
             this._GameContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.OnContextMenuOpening);
@@ -294,6 +341,20 @@
             this._RemoveFromSelectedMenuItem.Text = "Remove from SELECTED";
             this._RemoveFromSelectedMenuItem.Click += new System.EventHandler(this.OnRemoveFromSelected);
             //
+            // _MarkAsDoneMenuItem
+            //
+            this._MarkAsDoneMenuItem.Name = "_MarkAsDoneMenuItem";
+            this._MarkAsDoneMenuItem.Size = new System.Drawing.Size(220, 22);
+            this._MarkAsDoneMenuItem.Text = "✅ Mark as Done";
+            this._MarkAsDoneMenuItem.Click += new System.EventHandler(this.OnMarkAsDone);
+            //
+            // _ResetAchievementsMenuItem
+            //
+            this._ResetAchievementsMenuItem.Name = "_ResetAchievementsMenuItem";
+            this._ResetAchievementsMenuItem.Size = new System.Drawing.Size(220, 22);
+            this._ResetAchievementsMenuItem.Text = "🔄 Reset Achievements";
+            this._ResetAchievementsMenuItem.Click += new System.EventHandler(this.OnResetAchievements);
+            //
             // _ClearAllSelectionsMenuItem
             //
             this._ClearAllSelectionsMenuItem.Name = "_ClearAllSelectionsMenuItem";
@@ -301,20 +362,30 @@
             this._ClearAllSelectionsMenuItem.Text = "Clear SELECTED Section";
             this._ClearAllSelectionsMenuItem.Click += new System.EventHandler(this.OnClearAllSelections);
             //
+            // _ClearDoneMenuItem
+            //
+            this._ClearDoneMenuItem.Name = "_ClearDoneMenuItem";
+            this._ClearDoneMenuItem.Size = new System.Drawing.Size(220, 22);
+            this._ClearDoneMenuItem.Text = "🗑️ Clear DONE Section";
+            this._ClearDoneMenuItem.Click += new System.EventHandler(this.OnClearDone);
+            //
             // _SelectedHeaderPanel
             //
             this._SelectedHeaderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(70)))));
             this._SelectedHeaderPanel.Controls.Add(this._SelectedHeaderLabel);
+            this._SelectedHeaderPanel.Cursor = System.Windows.Forms.Cursors.Hand;
             this._SelectedHeaderPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this._SelectedHeaderPanel.Location = new System.Drawing.Point(0, 25);
             this._SelectedHeaderPanel.Name = "_SelectedHeaderPanel";
             this._SelectedHeaderPanel.Size = new System.Drawing.Size(742, 24);
             this._SelectedHeaderPanel.TabIndex = 5;
             this._SelectedHeaderPanel.Visible = false;
+            this._SelectedHeaderPanel.Click += new System.EventHandler(this.OnToggleSelectedSection);
             //
             // _SelectedHeaderLabel
             //
             this._SelectedHeaderLabel.AutoSize = true;
+            this._SelectedHeaderLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this._SelectedHeaderLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this._SelectedHeaderLabel.ForeColor = System.Drawing.Color.Yellow;
             this._SelectedHeaderLabel.Location = new System.Drawing.Point(4, 4);
@@ -322,10 +393,12 @@
             this._SelectedHeaderLabel.Size = new System.Drawing.Size(95, 15);
             this._SelectedHeaderLabel.TabIndex = 0;
             this._SelectedHeaderLabel.Text = "▼ SELECTED (0)";
+            this._SelectedHeaderLabel.Click += new System.EventHandler(this.OnToggleSelectedSection);
             //
             // _SelectedListView
             //
             this._SelectedListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(50)))), ((int)(((byte)(30)))));
+            this._SelectedListView.ContextMenuStrip = this._GameContextMenu;
             this._SelectedListView.Dock = System.Windows.Forms.DockStyle.Top;
             this._SelectedListView.ForeColor = System.Drawing.Color.Yellow;
             this._SelectedListView.HideSelection = false;
@@ -334,7 +407,8 @@
             this._SelectedListView.MultiSelect = true;
             this._SelectedListView.Name = "_SelectedListView";
             this._SelectedListView.OwnerDraw = true;
-            this._SelectedListView.Size = new System.Drawing.Size(742, 100);
+            // Selected games list directly under SELECTED header
+            this._SelectedListView.Size = new System.Drawing.Size(742, 120);
             this._SelectedListView.SmallImageList = this._LogoImageList;
             this._SelectedListView.TabIndex = 7;
             this._SelectedListView.TileSize = new System.Drawing.Size(184, 69);
@@ -346,6 +420,57 @@
             this._SelectedListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnGameListViewClick);
             this._SelectedListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnSelectedListViewRetrieveVirtualItem);
             //
+            // _DoneHeaderPanel
+            //
+            this._DoneHeaderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(60)))), ((int)(((byte)(40)))));
+            this._DoneHeaderPanel.Controls.Add(this._DoneHeaderLabel);
+            this._DoneHeaderPanel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this._DoneHeaderPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this._DoneHeaderPanel.Location = new System.Drawing.Point(0, 149);
+            this._DoneHeaderPanel.Name = "_DoneHeaderPanel";
+            this._DoneHeaderPanel.Size = new System.Drawing.Size(742, 24);
+            this._DoneHeaderPanel.TabIndex = 8;
+            this._DoneHeaderPanel.Visible = false;
+            this._DoneHeaderPanel.Click += new System.EventHandler(this.OnToggleDoneSection);
+            //
+            // _DoneHeaderLabel
+            //
+            this._DoneHeaderLabel.AutoSize = true;
+            this._DoneHeaderLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this._DoneHeaderLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this._DoneHeaderLabel.ForeColor = System.Drawing.Color.LightGreen;
+            this._DoneHeaderLabel.Location = new System.Drawing.Point(4, 4);
+            this._DoneHeaderLabel.Name = "_DoneHeaderLabel";
+            this._DoneHeaderLabel.Size = new System.Drawing.Size(70, 15);
+            this._DoneHeaderLabel.TabIndex = 0;
+            this._DoneHeaderLabel.Text = "▼ DONE (0)";
+            this._DoneHeaderLabel.Click += new System.EventHandler(this.OnToggleDoneSection);
+            //
+            // _DoneListView
+            //
+            this._DoneListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(50)))), ((int)(((byte)(35)))));
+            this._DoneListView.ContextMenuStrip = this._GameContextMenu;
+            this._DoneListView.Dock = System.Windows.Forms.DockStyle.Top;
+            this._DoneListView.ForeColor = System.Drawing.Color.LightGreen;
+            this._DoneListView.HideSelection = false;
+            this._DoneListView.LargeImageList = this._LogoImageList;
+            this._DoneListView.Location = new System.Drawing.Point(0, 173);
+            this._DoneListView.MultiSelect = true;
+            this._DoneListView.Name = "_DoneListView";
+            this._DoneListView.OwnerDraw = true;
+            // Done games list directly under DONE header
+            this._DoneListView.Size = new System.Drawing.Size(742, 120);
+            this._DoneListView.SmallImageList = this._LogoImageList;
+            this._DoneListView.TabIndex = 9;
+            this._DoneListView.TileSize = new System.Drawing.Size(184, 69);
+            this._DoneListView.UseCompatibleStateImageBehavior = false;
+            this._DoneListView.VirtualMode = true;
+            this._DoneListView.Visible = false;
+            this._DoneListView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.OnGameListViewDrawItem);
+            this._DoneListView.ItemActivate += new System.EventHandler(this.OnActivateGame);
+            this._DoneListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnGameListViewClick);
+            this._DoneListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnDoneListViewRetrieveVirtualItem);
+            //
             // _OtherGamesHeaderPanel
             //
             this._OtherGamesHeaderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(70)))));
@@ -356,6 +481,7 @@
             this._OtherGamesHeaderPanel.Size = new System.Drawing.Size(742, 24);
             this._OtherGamesHeaderPanel.TabIndex = 6;
             this._OtherGamesHeaderPanel.Visible = true;
+            this._OtherGamesHeaderPanel.Click += new System.EventHandler(this.OnToggleOtherSection);
             //
             // _OtherGamesHeaderLabel
             //
@@ -367,6 +493,7 @@
             this._OtherGamesHeaderLabel.Size = new System.Drawing.Size(120, 15);
             this._OtherGamesHeaderLabel.TabIndex = 0;
             this._OtherGamesHeaderLabel.Text = "▼ OTHER GAMES (0)";
+            this._OtherGamesHeaderLabel.Click += new System.EventHandler(this.OnToggleOtherSection);
             //
             // _GameListView
             //
@@ -382,7 +509,8 @@
             this._GameListView.OwnerDraw = true;
             this._GameListView.Size = new System.Drawing.Size(742, 245);
             this._GameListView.SmallImageList = this._LogoImageList;
-            this._GameListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            // In VirtualMode we manage ordering ourselves; disable built-in sorting
+            this._GameListView.Sorting = System.Windows.Forms.SortOrder.None;
             this._GameListView.TabIndex = 0;
             this._GameListView.TileSize = new System.Drawing.Size(184, 69);
             this._GameListView.UseCompatibleStateImageBehavior = false;
@@ -436,25 +564,42 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(742, 292);
-            this.Controls.Add(this._GameListView);
-            this.Controls.Add(this._OtherGamesHeaderPanel);
-            this.Controls.Add(this._SelectedListView);
-            this.Controls.Add(this._SelectedHeaderPanel);
-            this.Controls.Add(this._PickerStatusStrip);
             this.Controls.Add(this._PickerToolStrip);
+            this.Controls.Add(this._SelectedHeaderPanel);
+            this.Controls.Add(this._SelectedListView);
+            this.Controls.Add(this._DoneHeaderPanel);
+            this.Controls.Add(this._DoneListView);
+            this.Controls.Add(this._OtherGamesHeaderPanel);
+            this.Controls.Add(this._GameListView);
+            this.Controls.Add(this._PickerStatusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GamePicker";
-            this.Text = "HxB SAM Enhanced 1.0 | Pick a game... Any game...";
+            this.Text = "HxB SAM Enhanced V1.2 | Pick a game... Any game...";
             this._PickerToolStrip.ResumeLayout(false);
             this._PickerToolStrip.PerformLayout();
             this._PickerStatusStrip.ResumeLayout(false);
             this._PickerStatusStrip.PerformLayout();
             this._SelectedHeaderPanel.ResumeLayout(false);
             this._SelectedHeaderPanel.PerformLayout();
+            this._DoneHeaderPanel.ResumeLayout(false);
+            this._DoneHeaderPanel.PerformLayout();
             this._OtherGamesHeaderPanel.ResumeLayout(false);
             this._OtherGamesHeaderPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+        }
+        
+        protected override void OnLoad(System.EventArgs e)
+        {
+            base.OnLoad(e);
+            // Force correct z-order at runtime
+            this._PickerToolStrip.BringToFront();
+            this._SelectedHeaderPanel.BringToFront();
+            this._SelectedListView.BringToFront();
+            this._DoneHeaderPanel.BringToFront();
+            this._DoneListView.BringToFront();
+            this._OtherGamesHeaderPanel.BringToFront();
+            this._GameListView.BringToFront();
         }
 
         private MyListView _GameListView;
@@ -481,6 +626,9 @@
         private System.Windows.Forms.ToolStripMenuItem _ClearAllSelectionsMenuItem;
         private System.Windows.Forms.Panel _SelectedHeaderPanel;
         private System.Windows.Forms.Label _SelectedHeaderLabel;
+        private System.Windows.Forms.Panel _DoneHeaderPanel;
+        private System.Windows.Forms.Label _DoneHeaderLabel;
+        private MyListView _DoneListView;
         private System.Windows.Forms.Panel _OtherGamesHeaderPanel;
         private System.Windows.Forms.Label _OtherGamesHeaderLabel;
         private MyListView _SelectedListView;
@@ -489,9 +637,15 @@
         private System.Windows.Forms.ToolStripMenuItem _LaunchThisOnlyMenuItem;
         private System.Windows.Forms.ToolStripMenuItem _LaunchOneRandomMenuItem;
         private System.Windows.Forms.ToolStripMenuItem _RemoveFromSelectedMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem _MarkAsDoneMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem _ResetAchievementsMenuItem;
+        private System.Windows.Forms.ToolStripButton _CheatSheetButton;
         private System.Windows.Forms.ToolStripButton _DonateButton;
         private System.Windows.Forms.ToolStripButton _SocialsButton;
         private System.Windows.Forms.ToolStripButton _DisclaimerButton;
+        private System.Windows.Forms.ToolStripButton _BulkResetButton;
+        private System.Windows.Forms.ToolStripButton _ClearDoneButton;
+        private System.Windows.Forms.ToolStripMenuItem _ClearDoneMenuItem;
 
         #endregion
     }

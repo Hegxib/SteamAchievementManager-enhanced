@@ -32,6 +32,8 @@ namespace SAM.Game
         public static void Main(string[] args)
         {
             long appId;
+            bool autoReset = false;
+            bool resetAchievements = false;
 
             if (args.Length == 0)
             {
@@ -39,6 +41,7 @@ namespace SAM.Game
                 return;
             }
 
+            // Parse arguments
             if (long.TryParse(args[0], out appId) == false)
             {
                 MessageBox.Show(
@@ -47,6 +50,15 @@ namespace SAM.Game
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 return;
+            }
+
+            // Check for auto-reset flags
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (args[i] == "--auto-reset")
+                    autoReset = true;
+                else if (args[i] == "--achievements")
+                    resetAchievements = true;
             }
 
             if (API.Steam.GetInstallPath() == Application.StartupPath)
@@ -109,7 +121,32 @@ namespace SAM.Game
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new Manager(appId, client));
+                
+                if (autoReset)
+                {
+                    // Auto-reset mode: reset and exit without showing UI
+                    try
+                    {
+                        if (client.SteamUserStats.ResetAllStats(resetAchievements))
+                        {
+                            client.SteamUserStats.StoreStats();
+                            Environment.ExitCode = 0; // Success
+                        }
+                        else
+                        {
+                            Environment.ExitCode = 1; // Failed
+                        }
+                    }
+                    catch
+                    {
+                        Environment.ExitCode = 1; // Failed
+                    }
+                }
+                else
+                {
+                    // Normal mode: show UI
+                    Application.Run(new Manager(appId, client));
+                }
             }
         }
     }

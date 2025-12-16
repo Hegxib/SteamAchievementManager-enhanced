@@ -16,15 +16,17 @@ namespace SAM.Picker
     {
         private readonly List<GameInfo> _GamesToLaunch;
         private readonly int _DelayBetweenLaunches;
+        private readonly Action<uint> _OnGameClosed;
         private int _CurrentIndex;
         private int _SuccessCount;
         private int _FailCount;
         private bool _IsCancelled;
 
-        public LaunchQueueDialog(List<GameInfo> games, int delaySeconds)
+        public LaunchQueueDialog(List<GameInfo> games, int delaySeconds, Action<uint> onGameClosed = null)
         {
             this._GamesToLaunch = games;
             this._DelayBetweenLaunches = delaySeconds;
+            this._OnGameClosed = onGameClosed;
             this._CurrentIndex = 0;
             this._SuccessCount = 0;
             this._FailCount = 0;
@@ -165,7 +167,19 @@ namespace SAM.Picker
                 try
                 {
                     var gamePath = Path.Combine(Application.StartupPath, "SAM.Game.exe");
-                    Process.Start(gamePath, game.Id.ToString(CultureInfo.InvariantCulture));
+                    var process = Process.Start(gamePath, game.Id.ToString(CultureInfo.InvariantCulture));
+                    
+                    // Monitor process to trigger callback when it exits
+                    if (process != null && this._OnGameClosed != null)
+                    {
+                        var gameId = game.Id;
+                        process.EnableRaisingEvents = true;
+                        process.Exited += (s, args) =>
+                        {
+                            this._OnGameClosed(gameId);
+                        };
+                    }
+                    
                     this._SuccessCount++;
                     worker.ReportProgress(i + 1, $"✓ Launched: {game.Name}");
                 }

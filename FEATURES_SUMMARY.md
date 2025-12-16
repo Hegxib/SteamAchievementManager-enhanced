@@ -1,6 +1,6 @@
 # ✨ Features Summary - SAM Ultimate Edition
 
-## 🎯 All Implemented Features (Phases 1-4 Complete!)
+## 🎯 All Implemented Features (Phases 1-5 Complete!)
 
 ### Phase 1: Quick Selection Management ✅
 **Select All / Clear All Buttons**
@@ -288,6 +288,55 @@ UI refresh (smooth, no flicker)
 - ✅ Phase 2: Persistent selection (auto-save/load)
 - ✅ Phase 3: Enhanced context menu (dynamic items)
 - ✅ Phase 4: Launch queue system (progress dialog)
+- ✅ Phase 5: Mark as done tracking (completion status)
+
+---
+
+### Phase 5: Mark as Done Tracking ✅
+**Track Game Completion Status**
+
+Right-click any game to mark it as complete/done:
+- ✅ **Mark as Done** - Mark a game as complete
+- ❌ **Unmark as Done** - Unmark a completed game
+
+**Visual Indicators:**
+- Done games show with **light green/white background**
+- Easy to see at a glance which games are complete
+- Works in both SELECTED and OTHER GAMES sections
+
+**Automatic Marking:**
+- Games are **automatically marked as done** when you close SAM.Game window
+- Works with all launch methods:
+  - Launch This Only
+  - Launch One Random  
+  - Launch Queue
+  - Launch All Immediately
+
+**Persistence:**
+- Done status saved to `%APPDATA%\SAM\done_games.txt`
+- Auto-loads when SAM.Picker starts
+- Never lose your progress
+
+**Use Cases:**
+- Track achievement hunting progress
+- Identify which games still need processing
+- Visual completion tracking for large libraries
+- Batch operation progress monitoring
+
+**How it works:**
+```
+1. Launch a game (any method)
+2. Manage achievements in SAM.Game
+3. Close SAM.Game window
+4. → Game automatically marked as done with green background
+5. Or manually mark/unmark via right-click context menu
+```
+
+**Technical Details:**
+- Location: `%AppData%\SAM\done_games.txt`
+- Format: One game ID per line
+- Thread-safe process monitoring
+- Custom owner-draw for visual highlighting
 
 ---
 
@@ -295,22 +344,24 @@ UI refresh (smooth, no flicker)
 
 **Potential Future Enhancements:**
 
-### Phase 5: Drag & Drop Reordering
+### Phase 6: Drag & Drop Reordering
 - Manually order selected games
 - Launch in custom sequence
 - Save custom orderings
 
-### Phase 6: Search in SELECTED
+### Phase 7: Search in SELECTED
 - Filter within selected games only
 - Quick-find in large selections
 
-### Phase 7-10: Advanced Features
+### Phase 8-10: Advanced Features
 - Steam Tags integration
 - Achievement statistics
 - Quick select by category
 - Genre-based filters
+- Filter by done/not done status
+- Done game statistics
 
-**Current Status:** Phases 1-4 complete and fully functional! 🚀
+**Current Status:** Phases 1-5 complete and fully functional! 🚀
 
 ---
 

@@ -34,6 +34,7 @@ namespace SAM.Picker
         public int ImageIndex;
         public bool IsSelected; // New: Track if game is in selected section
         public int PlaytimeForever; // Total playtime in minutes
+        public bool HasAllAchievementsUnlocked; // Track if game has 100% achievements
 
         public string Name
         {
@@ -74,6 +75,7 @@ namespace SAM.Picker
             this.ImageIndex = 0;
             this.ImageUrl = null;
             this.IsSelected = false;
+            this.HasAllAchievementsUnlocked = false;
         }
     }
 }
