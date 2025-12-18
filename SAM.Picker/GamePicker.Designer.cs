@@ -46,6 +46,7 @@
             this._FilterModsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._FilterJunkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._CheatSheetButton = new System.Windows.Forms.ToolStripButton();
+            this._LanguageButton = new System.Windows.Forms.ToolStripDropDownButton();
             this._DonateButton = new System.Windows.Forms.ToolStripButton();
             this._SocialsButton = new System.Windows.Forms.ToolStripButton();
             this._DisclaimerButton = new System.Windows.Forms.ToolStripButton();
@@ -123,6 +124,7 @@
             this._ClearDoneButton,
             new System.Windows.Forms.ToolStripSeparator(),
             this._CheatSheetButton,
+            this._LanguageButton,
             this._DonateButton,
             this._SocialsButton,
             this._DisclaimerButton});
@@ -230,6 +232,16 @@
             this._CheatSheetButton.Text = "📋 Cheat Sheet";
             this._CheatSheetButton.ToolTipText = "View shortcuts and tips";
             this._CheatSheetButton.Click += new System.EventHandler(this.OnCheatSheetClick);
+            //
+            // _LanguageButton
+            //
+            this._LanguageButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this._LanguageButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._LanguageButton.Name = "_LanguageButton";
+            this._LanguageButton.Size = new System.Drawing.Size(85, 22);
+            this._LanguageButton.Text = "🌍 Language";
+            this._LanguageButton.ToolTipText = "Change language / 更改语言 / 言語を変更";
+            this._LanguageButton.DropDownOpening += new System.EventHandler(this.OnLanguageDropDownOpening);
             //
             // _DonateButton
             //
@@ -574,7 +586,7 @@
             this.Controls.Add(this._PickerStatusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GamePicker";
-            this.Text = "HxB SAM Enhanced V1.2 | Pick a game... Any game...";
+            this.Text = "HxB SAM Enhanced V1.3 | Pick a game... Any game...";
             this._PickerToolStrip.ResumeLayout(false);
             this._PickerToolStrip.PerformLayout();
             this._PickerStatusStrip.ResumeLayout(false);
@@ -640,6 +652,7 @@
         private System.Windows.Forms.ToolStripMenuItem _MarkAsDoneMenuItem;
         private System.Windows.Forms.ToolStripMenuItem _ResetAchievementsMenuItem;
         private System.Windows.Forms.ToolStripButton _CheatSheetButton;
+        private System.Windows.Forms.ToolStripDropDownButton _LanguageButton;
         private System.Windows.Forms.ToolStripButton _DonateButton;
         private System.Windows.Forms.ToolStripButton _SocialsButton;
         private System.Windows.Forms.ToolStripButton _DisclaimerButton;

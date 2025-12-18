@@ -100,6 +100,10 @@ namespace SAM.Picker
 
             this.InitializeComponent();
 
+            // Initialize language system (must be after InitializeComponent)
+            Localization.LanguageManager.Instance.LanguageChanged += OnLanguageChanged;
+            ApplyCurrentLanguage();
+
             Bitmap blank = new(this._LogoImageList.ImageSize.Width, this._LogoImageList.ImageSize.Height);
             using (var g = Graphics.FromImage(blank))
             {
@@ -534,13 +538,18 @@ namespace SAM.Picker
                         System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(this) as MyListView;
                     bool isInDoneList = (doneListView != null && clickedListView == doneListView);
                     
-                    // Update menu text dynamically
-                    this._ToggleSelectionMenuItem.Text = isInSelectedList ? "Remove from SELECTED" : "Add to SELECTED";
+                    // Update menu text dynamically using translations
+                    var lang = Localization.LanguageManager.Instance;
+                    this._ToggleSelectionMenuItem.Text = isInSelectedList ? 
+                        lang.GetString("context_remove_selected") : 
+                        lang.GetString("context_toggle_selection");
                     this._RemoveFromSelectedMenuItem.Visible = isInSelectedList;
                     this._LaunchThisOnlyMenuItem.Visible = true;
                     
                     // Update Mark as Done text based on whether game is in DONE section
-                    this._MarkAsDoneMenuItem.Text = isInDoneList ? "✓ Unmark as Done" : "✓ Mark as Done";
+                    this._MarkAsDoneMenuItem.Text = isInDoneList ? 
+                        lang.GetString("context_unmark_done") : 
+                        lang.GetString("context_mark_done");
                 }
                 else
                 {
@@ -556,57 +565,7 @@ namespace SAM.Picker
         {
             var clickedListView = this._ContextListView ?? (this._GameContextMenu.SourceControl as MyListView);
             if (clickedListView == null) return;
-            int index = this._ContextIndex;
-            if (index < 0) return;
-            GameInfo gameToLaunch = null;
-            
-            if (clickedListView == this._SelectedListView && index >= 0 && index < this._SelectedGames.Count)
-            {
-                gameToLaunch = this._SelectedGames[index];
-            }
-            else if (clickedListView == this._GameListView && index >= 0 && index < this._FilteredGames.Count)
-            {
-                gameToLaunch = this._FilteredGames[index];
-            }
-            
-            if (gameToLaunch != null)
-            {
-                try
-                {
-                    var gamePath = Path.Combine(Application.StartupPath, "SAM.Game.exe");
-                    var process = new Process
-                    {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            FileName = gamePath,
-                            Arguments = gameToLaunch.Id.ToString(CultureInfo.InvariantCulture),
-                            UseShellExecute = true
-                        },
-                        EnableRaisingEvents = true
-                    };
-                    
-                    // Capture gameId for closure
-                    uint gameId = gameToLaunch.Id;
-                    
-                    // Monitor process exit for auto-close detection
-                    process.Exited += (s, args) =>
-                    {
-                        // Must invoke on UI thread
-                        this.BeginInvoke(new Action(() => OnGameProcessExited(gameId)));
-                    };
-                    
-                    process.Start();
-                }
-                catch (Win32Exception)
-                {
-                    MessageBox.Show(
-                        this,
-                        $"Failed to launch game: {gameToLaunch.Name}",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
-            }
+            LaunchSelectedGames(clickedListView);
         }
         
         private void OnGameProcessExited(uint gameId)
@@ -662,10 +621,11 @@ namespace SAM.Picker
         {
             if (this._SelectedGameIds.Count == 0)
             {
+                var lang = Localization.LanguageManager.Instance;
                 MessageBox.Show(
                     this,
-                    "No games selected. Please add games to the SELECTED list first.",
-                    "No Games Selected",
+                    lang.GetString("error_no_games_selected"),
+                    lang.GetString("error_title"),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -679,20 +639,7 @@ namespace SAM.Picker
             
             if (this._Games.TryGetValue(gameId, out var gameInfo))
             {
-                try
-                {
-                    var gamePath = Path.Combine(Application.StartupPath, "SAM.Game.exe");
-                    Process.Start(gamePath, gameInfo.Id.ToString(CultureInfo.InvariantCulture));
-                }
-                catch (Win32Exception)
-                {
-                    MessageBox.Show(
-                        this,
-                        $"Failed to launch game: {gameInfo.Name}",
-                        "Error",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
+                LaunchGame(gameInfo);
             }
         }
 
@@ -819,7 +766,7 @@ namespace SAM.Picker
   %AppData%\SAM\SelectedCache\   → SELECTED cache
   %AppData%\SAM\DoneCache\       → DONE cache
 
-Made by Hegxib | v1.2.0";
+Made by Hegxib | v1.3.0";
 
             MessageBox.Show(
                 this,
@@ -827,6 +774,99 @@ Made by Hegxib | v1.2.0";
                 "📋 Cheat Sheet - Shortcuts & Tips",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
+        }
+
+        private void OnLanguageDropDownOpening(object sender, EventArgs e)
+        {
+            _LanguageButton.DropDownItems.Clear();
+            
+            var languages = Localization.LanguageManager.Instance.GetAvailableLanguages();
+            var currentLang = Localization.LanguageManager.Instance.CurrentLanguageCode;
+            
+            foreach (var lang in languages)
+            {
+                var item = new ToolStripMenuItem
+                {
+                    Text = lang.Name,
+                    Tag = lang.Code,
+                    Checked = (lang.Code == currentLang),
+                    CheckOnClick = false
+                };
+                item.Click += OnLanguageSelected;
+                _LanguageButton.DropDownItems.Add(item);
+            }
+        }
+
+        private void OnLanguageSelected(object sender, EventArgs e)
+        {
+            var item = sender as ToolStripMenuItem;
+            if (item != null)
+            {
+                string langCode = item.Tag.ToString();
+                
+                // Load the new language
+                Localization.LanguageManager.Instance.LoadLanguage(langCode);
+                
+                // Apply translations immediately (no restart needed)
+                ApplyCurrentLanguage();
+            }
+        }
+
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            ApplyCurrentLanguage();
+        }
+
+        private void ApplyCurrentLanguage()
+        {
+            var lang = Localization.LanguageManager.Instance;
+            
+            // Update window title
+            this.Text = lang.GetString("app_title");
+            
+            // Update toolbar buttons
+            _RefreshGamesButton.Text = lang.GetString("toolbar_refresh");
+            _AddGameButton.Text = lang.GetString("toolbar_add_game");
+            _FindGamesLabel.Text = lang.GetString("toolbar_filter");
+            _FilterDropDownButton.Text = lang.GetString("toolbar_filter");
+            _FilterGamesMenuItem.Text = lang.GetString("toolbar_filter_games");
+            _FilterDemosMenuItem.Text = lang.GetString("toolbar_filter_demos");
+            _FilterModsMenuItem.Text = lang.GetString("toolbar_filter_mods");
+            _FilterJunkMenuItem.Text = lang.GetString("toolbar_filter_junk");
+            _SelectAllButton.Text = lang.GetString("toolbar_select_all");
+            _ClearAllButton.Text = lang.GetString("toolbar_clear_all");
+            _BulkResetButton.Text = lang.GetString("toolbar_bulk_reset");
+            _BulkResetButton.ToolTipText = lang.GetString("toolbar_bulk_reset_tooltip");
+            _ClearDoneButton.Text = lang.GetString("toolbar_clear_done");
+            _ClearDoneButton.ToolTipText = lang.GetString("toolbar_clear_done_tooltip");
+            _CheatSheetButton.Text = lang.GetString("toolbar_cheat_sheet");
+            _CheatSheetButton.ToolTipText = lang.GetString("toolbar_cheat_sheet_tooltip");
+            _LanguageButton.Text = lang.GetString("language_select");
+            _LanguageButton.ToolTipText = lang.GetString("language_select_tooltip");
+            _DonateButton.Text = lang.GetString("toolbar_donate");
+            _DonateButton.ToolTipText = lang.GetString("toolbar_donate_tooltip");
+            _SocialsButton.Text = lang.GetString("toolbar_socials");
+            _SocialsButton.ToolTipText = lang.GetString("toolbar_socials_tooltip");
+            _DisclaimerButton.Text = lang.GetString("toolbar_disclaimer");
+            _DisclaimerButton.ToolTipText = lang.GetString("toolbar_disclaimer_tooltip");
+            
+            // Update section headers
+            _SelectedHeaderLabel.Text = lang.GetString("section_selected");
+            _DoneHeaderLabel.Text = lang.GetString("section_done");
+            _OtherGamesHeaderLabel.Text = lang.GetString("section_other_games");
+            
+            // Update context menu items
+            _ToggleSelectionMenuItem.Text = lang.GetString("context_toggle_selection");
+            _LaunchThisOnlyMenuItem.Text = lang.GetString("context_launch");
+            _LaunchOneRandomMenuItem.Text = lang.GetString("context_launch_random");
+            _RemoveFromSelectedMenuItem.Text = lang.GetString("context_remove_selected");
+            _ClearAllSelectionsMenuItem.Text = lang.GetString("context_clear_all_selections");
+            _MarkAsDoneMenuItem.Text = lang.GetString("context_mark_done");
+            _ClearDoneMenuItem.Text = lang.GetString("toolbar_clear_done");
+            _ResetAchievementsMenuItem.Text = lang.GetString("context_reset");
+            
+            // Force UI refresh
+            this.Refresh();
         }
 
         private void OnSocialsClick(object sender, EventArgs e)
@@ -1396,87 +1436,91 @@ Made by Hegxib | v1.2.0";
 
         private void OnActivateGame(object sender, EventArgs e)
         {
-            // Launch ALL games that are in the SELECTED section (_SelectedGameIds)
-            if (this._SelectedGameIds.Count == 0)
+            var listView = sender as MyListView;
+            if (listView == null) return;
+            LaunchSelectedGames(listView);
+        }
+
+        private void LaunchSelectedGames(MyListView listView)
+        {
+            if (listView.SelectedIndices.Count == 0) return;
+
+            // Get _DoneListView and _DoneGames via reflection for DONE section
+            var doneListView = this.GetType().GetField("_DoneListView",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(this) as MyListView;
+            var doneGames = this.GetType().GetField("_DoneGames",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(this) as List<GameInfo>;
+
+            foreach (int index in listView.SelectedIndices)
             {
-                MessageBox.Show(
-                    this,
-                    "No games selected. Click games to add them to the SELECTED section first.",
-                    "No Selection",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
+                GameInfo gameInfo = null;
+                if (listView == this._SelectedListView && index >= 0 && index < this._SelectedGames.Count)
+                {
+                    gameInfo = this._SelectedGames[index];
+                }
+                else if (listView == this._GameListView && index >= 0 && index < this._FilteredGames.Count)
+                {
+                    gameInfo = this._FilteredGames[index];
+                }
+                else if (listView == doneListView && doneGames != null && index >= 0 && index < doneGames.Count)
+                {
+                    gameInfo = doneGames[index];
+                }
+
+                if (gameInfo != null)
+                {
+                    LaunchGame(gameInfo);
+                }
             }
+        }
 
-            // Show launch options dialog
-            using (var optionsDialog = new LaunchOptionsDialog())
+        private void LaunchGame(GameInfo gameInfo)
+        {
+            try
             {
-                if (optionsDialog.ShowDialog(this) != DialogResult.OK)
+                var exePath = Path.Combine(Application.StartupPath, "SAM.Game.exe");
+                if (!File.Exists(exePath))
                 {
-                    return; // User cancelled
+                    var lang = Localization.LanguageManager.Instance;
+                    MessageBox.Show(this,
+                        "SAM.Game.exe not found. Please ensure all files are extracted correctly.",
+                        lang.GetString("error_title"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
                 }
 
-                // Get selected games
-                var gamesToLaunch = new List<GameInfo>();
-                foreach (var gameId in this._SelectedGameIds)
+                var process = new Process
                 {
-                    if (this._Games.TryGetValue(gameId, out var gameInfo))
+                    StartInfo = new ProcessStartInfo
                     {
-                        gamesToLaunch.Add(gameInfo);
-                    }
-                }
+                        FileName = exePath,
+                        Arguments = gameInfo.Id.ToString(CultureInfo.InvariantCulture),
+                        UseShellExecute = true,
+                        WorkingDirectory = Application.StartupPath
+                    },
+                    EnableRaisingEvents = true
+                };
 
-                if (optionsDialog.UseQueue)
+                uint gameId = gameInfo.Id;
+                process.Exited += (s, args) =>
                 {
-                    // Use launch queue with progress dialog
-                    using (var queueDialog = new LaunchQueueDialog(gamesToLaunch, optionsDialog.DelaySeconds))
+                    if (!this.IsDisposed && this.IsHandleCreated)
                     {
-                        queueDialog.ShowDialog(this);
+                        this.BeginInvoke(new Action(() => OnGameProcessExited(gameId)));
                     }
-                }
-                else
-                {
-                    // Launch all immediately (original behavior)
-                    int successCount = 0;
-                    int failCount = 0;
-                    
-                    foreach (var gameInfo in gamesToLaunch)
-                    {
-                        try
-                        {
-                            var exePath = Path.Combine(Application.StartupPath, "SAM.Game.exe");
-                            Process.Start(exePath, gameInfo.Id.ToString(CultureInfo.InvariantCulture));
-                            successCount++;
-                        }
-                        catch (Win32Exception)
-                        {
-                            failCount++;
-                        }
-                        catch (Exception)
-                        {
-                            failCount++;
-                        }
-                    }
+                };
 
-                    if (failCount > 0)
-                    {
-                        MessageBox.Show(
-                            this,
-                            $"Successfully launched {successCount} game(s).\nFailed to launch {failCount} game(s).",
-                            failCount == this._SelectedGameIds.Count ? "Error" : "Warning",
-                            MessageBoxButtons.OK,
-                            failCount == this._SelectedGameIds.Count ? MessageBoxIcon.Error : MessageBoxIcon.Warning);
-                    }
-                    else if (successCount > 1)
-                    {
-                        MessageBox.Show(
-                            this,
-                            $"Successfully launched {successCount} games.",
-                            "Success",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                    }
-                }
+                process.Start();
+            }
+            catch (Exception ex)
+            {
+                var lang = Localization.LanguageManager.Instance;
+                MessageBox.Show(this,
+                    $"Failed to launch achievement manager for {gameInfo.Name}:\n{ex.Message}",
+                    lang.GetString("error_title"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 

@@ -60,6 +60,9 @@ namespace SAM.Game
         public Manager(long gameId, API.Client client)
         {
             this.InitializeComponent();
+            
+            // Initialize language system (must be after InitializeComponent)
+            Localization.LanguageManager.Instance.LanguageChanged += OnLanguageChanged;
 
             this._MainTabControl.SelectedTab = this._AchievementsTabPage;
             //this.statisticsList.Enabled = this.checkBox1.Checked;
@@ -82,6 +85,9 @@ namespace SAM.Game
             this._StatisticsDataGridView.Columns[2].ReadOnly = true;
             this._StatisticsDataGridView.Columns[2].Width = 200;
             this._StatisticsDataGridView.Columns[2].DataPropertyName = "Extra";
+
+            // Apply language AFTER columns are created
+            ApplyCurrentLanguage();
 
             this._StatisticsDataGridView.DataSource = new BindingSource()
             {
@@ -1881,6 +1887,74 @@ namespace SAM.Game
             }
             
             return baseWeight;
+        }
+        
+        private void OnLanguageChanged(object sender, EventArgs e)
+        {
+            ApplyCurrentLanguage();
+        }
+        
+        private void ApplyCurrentLanguage()
+        {
+            var lang = Localization.LanguageManager.Instance;
+            
+            // Update window title (will be appended with game name)
+            string gameName = this.Text.Contains(" | ") ? this.Text.Substring(this.Text.IndexOf(" | ")) : "";
+            this.Text = lang.GetString("game_title") + gameName;
+            
+            // Update tab pages
+            this._AchievementsTabPage.Text = lang.GetString("game_tab_achievements");
+            this._StatisticsTabPage.Text = lang.GetString("game_tab_statistics");
+            
+            // Update buttons
+            this._StoreButton.Text = lang.GetString("game_button_store");
+            this._ResetButton.Text = lang.GetString("game_button_reset");
+            
+            // Update checkboxes
+            this._EnableStatsEditingCheckBox.Text = lang.GetString("game_enable_stats_editing");
+            
+            // Update toolbar buttons and labels
+            this._DisplayLabel.Text = lang.GetString("game_toolbar_show_only");
+            this._DisplayLockedOnlyButton.Text = lang.GetString("game_toolbar_locked");
+            this._DisplayUnlockedOnlyButton.Text = lang.GetString("game_toolbar_unlocked");
+            this._MatchingStringLabel.Text = lang.GetString("game_toolbar_filter");
+            this._SetBulkUnlockTimeButton.Text = lang.GetString("game_toolbar_bulk_set_times");
+            
+            // Update toolbar tooltips
+            this._LockAllButton.ToolTipText = lang.GetString("game_toolbar_lock_all_tooltip");
+            this._InvertAllButton.ToolTipText = lang.GetString("game_toolbar_invert_all_tooltip");
+            this._UnlockAllButton.ToolTipText = lang.GetString("game_toolbar_unlock_all_tooltip");
+            this._MatchingStringTextBox.ToolTipText = lang.GetString("game_toolbar_filter_tooltip");
+            this._SetBulkUnlockTimeButton.ToolTipText = lang.GetString("game_toolbar_bulk_set_times_tooltip");
+            
+            // Update achievement list column headers
+            this._AchievementNameColumnHeader.Text = lang.GetString("game_column_name");
+            this._AchievementDescriptionColumnHeader.Text = lang.GetString("game_column_description");
+            this._AchievementUnlockTimeColumnHeader.Text = lang.GetString("game_column_unlock_time");
+            this._AchievementGlobalPercentColumnHeader.Text = lang.GetString("game_column_percent_players");
+            
+            // Update statistics column headers
+            this._StatisticsDataGridView.Columns[0].HeaderText = lang.GetString("game_column_name");
+            this._StatisticsDataGridView.Columns[1].HeaderText = lang.GetString("game_column_value");
+            this._StatisticsDataGridView.Columns[2].HeaderText = lang.GetString("game_column_extra");
+            
+            // Update context menu
+            foreach (ToolStripItem item in this._AchievementListView.ContextMenuStrip.Items)
+            {
+                if (item is ToolStripMenuItem menuItem)
+                {
+                    if (menuItem.Name == "unlockAchievementToolStripMenuItem")
+                        menuItem.Text = lang.GetString("game_context_unlock");
+                    else if (menuItem.Name == "lockAchievementToolStripMenuItem")
+                        menuItem.Text = lang.GetString("game_context_lock");
+                    else if (menuItem.Name == "invertSelectionToolStripMenuItem")
+                        menuItem.Text = lang.GetString("game_context_invert");
+                    else if (menuItem.Name == "unlockAllToolStripMenuItem")
+                        menuItem.Text = lang.GetString("game_context_unlock_all");
+                    else if (menuItem.Name == "lockAllToolStripMenuItem")
+                        menuItem.Text = lang.GetString("game_context_lock_all");
+                }
+            }
         }
     }
 }
