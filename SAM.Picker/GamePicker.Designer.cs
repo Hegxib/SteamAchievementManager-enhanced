@@ -86,28 +86,23 @@
             this._OtherGamesHeaderPanel.SuspendLayout();
             this.SuspendLayout();
             //
-            // _ToolStripSeparator1
             //
             _ToolStripSeparator1.Name = "_ToolStripSeparator1";
             _ToolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             //
-            // _ToolStripSeparator2
             //
             _ToolStripSeparator2.Name = "_ToolStripSeparator2";
             _ToolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             //
-            // _LogoImageList
             //
             this._LogoImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
             this._LogoImageList.ImageSize = new System.Drawing.Size(184, 69);
             this._LogoImageList.TransparentColor = System.Drawing.Color.Transparent;
             //
-            // _CallbackTimer
             //
             this._CallbackTimer.Enabled = true;
             this._CallbackTimer.Tick += new System.EventHandler(this.OnTimer);
             //
-            // _PickerToolStrip
             //
             this._PickerToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._RefreshGamesButton,
@@ -134,7 +129,6 @@
             this._PickerToolStrip.TabIndex = 1;
             this._PickerToolStrip.Text = "toolStrip1";
             //
-            // _RefreshGamesButton
             //
             this._RefreshGamesButton.Image = global::SAM.Picker.Resources.Refresh;
             this._RefreshGamesButton.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -143,13 +137,11 @@
             this._RefreshGamesButton.Text = "Refresh Games";
             this._RefreshGamesButton.Click += new System.EventHandler(this.OnRefresh);
             //
-            // _AddGameTextBox
             //
             this._AddGameTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this._AddGameTextBox.Name = "_AddGameTextBox";
             this._AddGameTextBox.Size = new System.Drawing.Size(100, 25);
             //
-            // _AddGameButton
             //
             this._AddGameButton.Image = global::SAM.Picker.Resources.Search;
             this._AddGameButton.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -158,20 +150,17 @@
             this._AddGameButton.Text = "Add Game";
             this._AddGameButton.Click += new System.EventHandler(this.OnAddGame);
             //
-            // _FindGamesLabel
             //
             this._FindGamesLabel.Name = "_FindGamesLabel";
             this._FindGamesLabel.Size = new System.Drawing.Size(33, 22);
             this._FindGamesLabel.Text = "Filter";
             //
-            // _SearchGameTextBox
             //
             this._SearchGameTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this._SearchGameTextBox.Name = "_SearchGameTextBox";
             this._SearchGameTextBox.Size = new System.Drawing.Size(100, 25);
             this._SearchGameTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnFilterUpdate);
             //
-            // _FilterDropDownButton
             //
             this._FilterDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this._FilterDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -185,7 +174,6 @@
             this._FilterDropDownButton.Size = new System.Drawing.Size(29, 22);
             this._FilterDropDownButton.Text = "Game filtering";
             //
-            // _SelectAllButton
             //
             this._SelectAllButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._SelectAllButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -194,7 +182,6 @@
             this._SelectAllButton.Text = "Select All";
             this._SelectAllButton.Click += new System.EventHandler(this.OnSelectAll);
             //
-            // _ClearAllButton
             //
             this._ClearAllButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._ClearAllButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -203,7 +190,6 @@
             this._ClearAllButton.Text = "Clear All";
             this._ClearAllButton.Click += new System.EventHandler(this.OnClearAll);
             //
-            // _BulkResetButton
             //
             this._BulkResetButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._BulkResetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -213,7 +199,6 @@
             this._BulkResetButton.ToolTipText = "Reset achievements for multiple games";
             this._BulkResetButton.Click += new System.EventHandler(this.OnBulkReset);
             //
-            // _ClearDoneButton
             //
             this._ClearDoneButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._ClearDoneButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -223,7 +208,6 @@
             this._ClearDoneButton.ToolTipText = "Clear all games from DONE section";
             this._ClearDoneButton.Click += new System.EventHandler(this.OnClearDone);
             //
-            // _CheatSheetButton
             //
             this._CheatSheetButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._CheatSheetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -233,7 +217,6 @@
             this._CheatSheetButton.ToolTipText = "View shortcuts and tips";
             this._CheatSheetButton.Click += new System.EventHandler(this.OnCheatSheetClick);
             //
-            // _LanguageButton
             //
             this._LanguageButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._LanguageButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -243,7 +226,6 @@
             this._LanguageButton.ToolTipText = "Change language / 更改语言 / 言語を変更";
             this._LanguageButton.DropDownOpening += new System.EventHandler(this.OnLanguageDropDownOpening);
             //
-            // _DonateButton
             //
             this._DonateButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._DonateButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -253,7 +235,6 @@
             this._DonateButton.ToolTipText = "Support on Ko-fi";
             this._DonateButton.Click += new System.EventHandler(this.OnDonateClick);
             //
-            // _SocialsButton
             //
             this._SocialsButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._SocialsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -263,7 +244,6 @@
             this._SocialsButton.ToolTipText = "Visit x.hegxib.me";
             this._SocialsButton.Click += new System.EventHandler(this.OnSocialsClick);
             //
-            // _DisclaimerButton
             //
             this._DisclaimerButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._DisclaimerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -273,7 +253,6 @@
             this._DisclaimerButton.ToolTipText = "View disclaimer";
             this._DisclaimerButton.Click += new System.EventHandler(this.OnDisclaimerClick);
             //
-            // _FilterGamesMenuItem
             //
             this._FilterGamesMenuItem.Checked = true;
             this._FilterGamesMenuItem.CheckOnClick = true;
@@ -283,7 +262,6 @@
             this._FilterGamesMenuItem.Text = "Show &games";
             this._FilterGamesMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
-            // _FilterDemosMenuItem
             //
             this._FilterDemosMenuItem.CheckOnClick = true;
             this._FilterDemosMenuItem.Name = "_FilterDemosMenuItem";
@@ -291,7 +269,6 @@
             this._FilterDemosMenuItem.Text = "Show &demos";
             this._FilterDemosMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
-            // _FilterModsMenuItem
             //
             this._FilterModsMenuItem.CheckOnClick = true;
             this._FilterModsMenuItem.Name = "_FilterModsMenuItem";
@@ -299,7 +276,6 @@
             this._FilterModsMenuItem.Text = "Show &mods";
             this._FilterModsMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
-            // _FilterJunkMenuItem
             //
             this._FilterJunkMenuItem.CheckOnClick = true;
             this._FilterJunkMenuItem.Name = "_FilterJunkMenuItem";
@@ -307,7 +283,6 @@
             this._FilterJunkMenuItem.Text = "Show &junk";
             this._FilterJunkMenuItem.CheckedChanged += new System.EventHandler(this.OnFilterUpdate);
             //
-            // _GameContextMenu
             //
             this._GameContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._ToggleSelectionMenuItem,
@@ -324,7 +299,6 @@
             this._GameContextMenu.Size = new System.Drawing.Size(200, 120);
             this._GameContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.OnContextMenuOpening);
             //
-            // _ToggleSelectionMenuItem
             //
             this._ToggleSelectionMenuItem.Name = "_ToggleSelectionMenuItem";
             this._ToggleSelectionMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
@@ -332,56 +306,48 @@
             this._ToggleSelectionMenuItem.Text = "Add to SELECTED";
             this._ToggleSelectionMenuItem.Click += new System.EventHandler(this.OnToggleSelection);
             //
-            // _LaunchThisOnlyMenuItem
             //
             this._LaunchThisOnlyMenuItem.Name = "_LaunchThisOnlyMenuItem";
             this._LaunchThisOnlyMenuItem.Size = new System.Drawing.Size(220, 22);
             this._LaunchThisOnlyMenuItem.Text = "Launch This Game Only";
             this._LaunchThisOnlyMenuItem.Click += new System.EventHandler(this.OnLaunchThisOnly);
             //
-            // _LaunchOneRandomMenuItem
             //
             this._LaunchOneRandomMenuItem.Name = "_LaunchOneRandomMenuItem";
             this._LaunchOneRandomMenuItem.Size = new System.Drawing.Size(270, 22);
             this._LaunchOneRandomMenuItem.Text = "Launch One Random from SELECTED";
             this._LaunchOneRandomMenuItem.Click += new System.EventHandler(this.OnLaunchOneRandom);
             //
-            // _RemoveFromSelectedMenuItem
             //
             this._RemoveFromSelectedMenuItem.Name = "_RemoveFromSelectedMenuItem";
             this._RemoveFromSelectedMenuItem.Size = new System.Drawing.Size(220, 22);
             this._RemoveFromSelectedMenuItem.Text = "Remove from SELECTED";
             this._RemoveFromSelectedMenuItem.Click += new System.EventHandler(this.OnRemoveFromSelected);
             //
-            // _MarkAsDoneMenuItem
             //
             this._MarkAsDoneMenuItem.Name = "_MarkAsDoneMenuItem";
             this._MarkAsDoneMenuItem.Size = new System.Drawing.Size(220, 22);
             this._MarkAsDoneMenuItem.Text = "✅ Mark as Done";
             this._MarkAsDoneMenuItem.Click += new System.EventHandler(this.OnMarkAsDone);
             //
-            // _ResetAchievementsMenuItem
             //
             this._ResetAchievementsMenuItem.Name = "_ResetAchievementsMenuItem";
             this._ResetAchievementsMenuItem.Size = new System.Drawing.Size(220, 22);
             this._ResetAchievementsMenuItem.Text = "🔄 Reset Achievements";
             this._ResetAchievementsMenuItem.Click += new System.EventHandler(this.OnResetAchievements);
             //
-            // _ClearAllSelectionsMenuItem
             //
             this._ClearAllSelectionsMenuItem.Name = "_ClearAllSelectionsMenuItem";
             this._ClearAllSelectionsMenuItem.Size = new System.Drawing.Size(220, 22);
             this._ClearAllSelectionsMenuItem.Text = "Clear SELECTED Section";
             this._ClearAllSelectionsMenuItem.Click += new System.EventHandler(this.OnClearAllSelections);
             //
-            // _ClearDoneMenuItem
             //
             this._ClearDoneMenuItem.Name = "_ClearDoneMenuItem";
             this._ClearDoneMenuItem.Size = new System.Drawing.Size(220, 22);
             this._ClearDoneMenuItem.Text = "🗑️ Clear DONE Section";
             this._ClearDoneMenuItem.Click += new System.EventHandler(this.OnClearDone);
             //
-            // _SelectedHeaderPanel
             //
             this._SelectedHeaderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(70)))));
             this._SelectedHeaderPanel.Controls.Add(this._SelectedHeaderLabel);
@@ -394,7 +360,6 @@
             this._SelectedHeaderPanel.Visible = false;
             this._SelectedHeaderPanel.Click += new System.EventHandler(this.OnToggleSelectedSection);
             //
-            // _SelectedHeaderLabel
             //
             this._SelectedHeaderLabel.AutoSize = true;
             this._SelectedHeaderLabel.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -407,7 +372,6 @@
             this._SelectedHeaderLabel.Text = "▼ SELECTED (0)";
             this._SelectedHeaderLabel.Click += new System.EventHandler(this.OnToggleSelectedSection);
             //
-            // _SelectedListView
             //
             this._SelectedListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(50)))), ((int)(((byte)(30)))));
             this._SelectedListView.ContextMenuStrip = this._GameContextMenu;
@@ -432,7 +396,6 @@
             this._SelectedListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnGameListViewClick);
             this._SelectedListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnSelectedListViewRetrieveVirtualItem);
             //
-            // _DoneHeaderPanel
             //
             this._DoneHeaderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(60)))), ((int)(((byte)(40)))));
             this._DoneHeaderPanel.Controls.Add(this._DoneHeaderLabel);
@@ -445,7 +408,6 @@
             this._DoneHeaderPanel.Visible = false;
             this._DoneHeaderPanel.Click += new System.EventHandler(this.OnToggleDoneSection);
             //
-            // _DoneHeaderLabel
             //
             this._DoneHeaderLabel.AutoSize = true;
             this._DoneHeaderLabel.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -458,7 +420,6 @@
             this._DoneHeaderLabel.Text = "▼ DONE (0)";
             this._DoneHeaderLabel.Click += new System.EventHandler(this.OnToggleDoneSection);
             //
-            // _DoneListView
             //
             this._DoneListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(50)))), ((int)(((byte)(35)))));
             this._DoneListView.ContextMenuStrip = this._GameContextMenu;
@@ -483,7 +444,6 @@
             this._DoneListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnGameListViewClick);
             this._DoneListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnDoneListViewRetrieveVirtualItem);
             //
-            // _OtherGamesHeaderPanel
             //
             this._OtherGamesHeaderPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(70)))));
             this._OtherGamesHeaderPanel.Controls.Add(this._OtherGamesHeaderLabel);
@@ -495,7 +455,6 @@
             this._OtherGamesHeaderPanel.Visible = true;
             this._OtherGamesHeaderPanel.Click += new System.EventHandler(this.OnToggleOtherSection);
             //
-            // _OtherGamesHeaderLabel
             //
             this._OtherGamesHeaderLabel.AutoSize = true;
             this._OtherGamesHeaderLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -507,7 +466,6 @@
             this._OtherGamesHeaderLabel.Text = "▼ OTHER GAMES (0)";
             this._OtherGamesHeaderLabel.Click += new System.EventHandler(this.OnToggleOtherSection);
             //
-            // _GameListView
             //
             this._GameListView.BackColor = System.Drawing.Color.Black;
             this._GameListView.ContextMenuStrip = this._GameContextMenu;
@@ -533,7 +491,6 @@
             this._GameListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnGameListViewRetrieveVirtualItem);
             this._GameListView.SearchForVirtualItem += new System.Windows.Forms.SearchForVirtualItemEventHandler(this.OnGameListViewSearchForVirtualItem);
             //
-            // _PickerStatusStrip
             //
             this._PickerStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._PickerStatusLabel,
@@ -544,14 +501,12 @@
             this._PickerStatusStrip.TabIndex = 2;
             this._PickerStatusStrip.Text = "statusStrip";
             //
-            // _PickerStatusLabel
             //
             this._PickerStatusLabel.Name = "_PickerStatusLabel";
             this._PickerStatusLabel.Size = new System.Drawing.Size(727, 17);
             this._PickerStatusLabel.Spring = true;
             this._PickerStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             //
-            // _DownloadStatusLabel
             //
             this._DownloadStatusLabel.Image = global::SAM.Picker.Resources.Download;
             this._DownloadStatusLabel.Name = "_DownloadStatusLabel";
@@ -559,13 +514,11 @@
             this._DownloadStatusLabel.Text = "Download status";
             this._DownloadStatusLabel.Visible = false;
             //
-            // _LogoWorker
             //
             this._LogoWorker.WorkerSupportsCancellation = true;
             this._LogoWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DoDownloadLogo);
             this._LogoWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.OnDownloadLogo);
             //
-            // _ListWorker
             //
             this._ListWorker.WorkerSupportsCancellation = true;
             this._ListWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DoDownloadList);

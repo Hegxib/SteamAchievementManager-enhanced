@@ -1,4 +1,4 @@
-namespace SAM.Game
+﻿namespace SAM.Game
 {
     partial class AchievementTimeDialog
     {
@@ -35,7 +35,6 @@ namespace SAM.Game
             this._InstructionLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // _EnableScheduleCheckBox
             // 
             this._EnableScheduleCheckBox.AutoSize = true;
             this._EnableScheduleCheckBox.Location = new System.Drawing.Point(12, 50);
@@ -46,7 +45,6 @@ namespace SAM.Game
             this._EnableScheduleCheckBox.UseVisualStyleBackColor = true;
             this._EnableScheduleCheckBox.CheckedChanged += new System.EventHandler(this.OnEnableScheduleChanged);
             // 
-            // _DateTimePicker
             // 
             this._DateTimePicker.CustomFormat = "yyyy-MM-dd HH:mm:ss";
             this._DateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
@@ -55,7 +53,6 @@ namespace SAM.Game
             this._DateTimePicker.Size = new System.Drawing.Size(360, 20);
             this._DateTimePicker.TabIndex = 1;
             // 
-            // _OKButton
             // 
             this._OKButton.Location = new System.Drawing.Point(216, 110);
             this._OKButton.Name = "_OKButton";
@@ -65,7 +62,6 @@ namespace SAM.Game
             this._OKButton.UseVisualStyleBackColor = true;
             this._OKButton.Click += new System.EventHandler(this.OnOK);
             // 
-            // _CancelButton
             // 
             this._CancelButton.Location = new System.Drawing.Point(297, 110);
             this._CancelButton.Name = "_CancelButton";
@@ -75,7 +71,6 @@ namespace SAM.Game
             this._CancelButton.UseVisualStyleBackColor = true;
             this._CancelButton.Click += new System.EventHandler(this.OnCancel);
             // 
-            // _InstructionLabel
             // 
             this._InstructionLabel.Location = new System.Drawing.Point(12, 9);
             this._InstructionLabel.Name = "_InstructionLabel";

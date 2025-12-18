@@ -65,7 +65,6 @@ namespace SAM.Game
             Localization.LanguageManager.Instance.LanguageChanged += OnLanguageChanged;
 
             this._MainTabControl.SelectedTab = this._AchievementsTabPage;
-            //this.statisticsList.Enabled = this.checkBox1.Checked;
 
             this._AchievementImageList.Images.Add("Blank", new Bitmap(64, 64));
 
@@ -112,7 +111,6 @@ namespace SAM.Game
             this._UserStatsReceivedCallback = client.CreateAndRegisterCallback<API.Callbacks.UserStatsReceived>();
             this._UserStatsReceivedCallback.OnRun += this.OnUserStatsReceived;
 
-            //this.UserStatsStoredCallback = new API.Callback(1102, new API.Callback.CallbackFunction(this.OnUserStatsStored));
 
             this.RefreshStats();
             this.LoadTimerState();
@@ -531,7 +529,6 @@ namespace SAM.Game
 
             this._AchievementListView.Items.Clear();
             this._AchievementListView.BeginUpdate();
-            //this.Achievements.Clear();
 
             bool wantLocked = this._DisplayLockedOnlyButton.Checked == true;
             bool wantUnlocked = this._DisplayUnlockedOnlyButton.Checked == true;

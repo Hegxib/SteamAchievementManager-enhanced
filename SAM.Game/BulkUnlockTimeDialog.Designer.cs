@@ -1,4 +1,4 @@
-namespace SAM.Game
+﻿namespace SAM.Game
 {
     partial class BulkUnlockTimeDialog
     {
@@ -42,7 +42,6 @@ namespace SAM.Game
             ((System.ComponentModel.ISupportInitialize)(this._IntervalNumeric)).BeginInit();
             this.SuspendLayout();
             // 
-            // _InstructionLabel
             // 
             this._InstructionLabel.Location = new System.Drawing.Point(12, 9);
             this._InstructionLabel.Name = "_InstructionLabel";
@@ -50,7 +49,6 @@ namespace SAM.Game
             this._InstructionLabel.TabIndex = 0;
             this._InstructionLabel.Text = "Smart distribution (default): Achievements unlock realistically based on rarity. Common achievements unlock quickly, rare ones take longer. Manual interval option available below.";
             // 
-            // _StartTimeLabel
             // 
             this._StartTimeLabel.AutoSize = true;
             this._StartTimeLabel.Location = new System.Drawing.Point(12, 60);
@@ -59,7 +57,6 @@ namespace SAM.Game
             this._StartTimeLabel.TabIndex = 1;
             this._StartTimeLabel.Text = "Start Time:";
             // 
-            // _StartTimePicker
             // 
             this._StartTimePicker.CustomFormat = "yyyy-MM-dd HH:mm:ss";
             this._StartTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
@@ -68,7 +65,6 @@ namespace SAM.Game
             this._StartTimePicker.Size = new System.Drawing.Size(352, 20);
             this._StartTimePicker.TabIndex = 2;
             // 
-            // _IntervalLabel
             // 
             this._IntervalLabel.AutoSize = true;
             this._IntervalLabel.Location = new System.Drawing.Point(12, 90);
@@ -77,7 +73,6 @@ namespace SAM.Game
             this._IntervalLabel.TabIndex = 3;
             this._IntervalLabel.Text = "Interval between:";
             // 
-            // _IntervalNumeric
             // 
             this._IntervalNumeric.Location = new System.Drawing.Point(120, 88);
             this._IntervalNumeric.Maximum = new decimal(new int[] {
@@ -99,7 +94,6 @@ namespace SAM.Game
             0,
             0});
             // 
-            // _UseSmartCheck
             // 
             this._UseSmartCheck = new System.Windows.Forms.CheckBox();
             this._UseSmartCheck.AutoSize = true;
@@ -110,7 +104,6 @@ namespace SAM.Game
             this._UseSmartCheck.Text = "Smart distribute across total duration:";
             this._UseSmartCheck.UseVisualStyleBackColor = true;
             // 
-            // _TotalDurationNumeric
             // 
             this._TotalDurationNumeric = new System.Windows.Forms.NumericUpDown();
             this._TotalDurationNumeric.Location = new System.Drawing.Point(260, 118);
@@ -121,7 +114,6 @@ namespace SAM.Game
             this._TotalDurationNumeric.TabIndex = 6;
             this._TotalDurationNumeric.Value = new decimal(new int[] {60,0,0,0});
             // 
-            // _TotalMinutesLabel
             // 
             this._TotalMinutesLabel = new System.Windows.Forms.Label();
             this._TotalMinutesLabel.AutoSize = true;
@@ -131,7 +123,6 @@ namespace SAM.Game
             this._TotalMinutesLabel.TabIndex = 7;
             this._TotalMinutesLabel.Text = "minutes";
             // 
-            // _MinutesLabel
             // 
             this._MinutesLabel.AutoSize = true;
             this._MinutesLabel.Location = new System.Drawing.Point(206, 90);
@@ -140,7 +131,6 @@ namespace SAM.Game
             this._MinutesLabel.TabIndex = 5;
             this._MinutesLabel.Text = "minutes";
             // 
-            // _ApplyToAllRadio
             // 
             this._ApplyToAllRadio.AutoSize = true;
             this._ApplyToAllRadio.Checked = true;
@@ -152,7 +142,6 @@ namespace SAM.Game
             this._ApplyToAllRadio.Text = "Apply to all achievements";
             this._ApplyToAllRadio.UseVisualStyleBackColor = true;
             // 
-            // _ApplyToSelectedRadio
             // 
             this._ApplyToSelectedRadio.AutoSize = true;
             this._ApplyToSelectedRadio.Location = new System.Drawing.Point(15, 173);
@@ -162,7 +151,6 @@ namespace SAM.Game
             this._ApplyToSelectedRadio.Text = "Apply to selected achievements only";
             this._ApplyToSelectedRadio.UseVisualStyleBackColor = true;
             // 
-            // _OKButton
             // 
             this._OKButton.Location = new System.Drawing.Point(316, 215);
             this._OKButton.Name = "_OKButton";
@@ -172,7 +160,6 @@ namespace SAM.Game
             this._OKButton.UseVisualStyleBackColor = true;
             this._OKButton.Click += new System.EventHandler(this.OnOK);
             // 
-            // _CancelButton
             // 
             this._CancelButton.Location = new System.Drawing.Point(397, 215);
             this._CancelButton.Name = "_CancelButton";
@@ -182,7 +169,6 @@ namespace SAM.Game
             this._CancelButton.UseVisualStyleBackColor = true;
             this._CancelButton.Click += new System.EventHandler(this.OnCancel);
             // 
-            // _ExampleLabel
             // 
             this._ExampleLabel.ForeColor = System.Drawing.Color.Gray;
             this._ExampleLabel.Location = new System.Drawing.Point(12, 195);
