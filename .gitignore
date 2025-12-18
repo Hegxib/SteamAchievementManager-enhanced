@@ -18,10 +18,25 @@ bin/
 release/
 *.zip
 
+# Documentation files (keep only essential docs in repo)
+LANGUAGE_FIX_SUMMARY.md
+TRANSLATION_FIXES_COMPLETE.md
+TRANSLATION_STATUS_FINAL.md
+AUTO_CLOSE_TIMER_FEATURE.md
+FEATURES_SUMMARY.md
+IMPLEMENTATION_STATUS.md
+NEW_FEATURES.md
+
+# Python scripts (temporary development files)
+create_languages.py
+__pycache__/
+*.py[cod]
+
 # Code signing certificate files (NEVER commit these!)
 *.pfx
 *.p12
 *.cer
+sign_executables.ps1
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
