@@ -32,6 +32,7 @@ using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using Microsoft.Win32;
 using static SAM.Picker.InvariantShorthand;
 using APITypes = SAM.API.Types;
 
@@ -103,6 +104,9 @@ namespace SAM.Picker
             // Initialize language system (must be after InitializeComponent)
             Localization.LanguageManager.Instance.LanguageChanged += OnLanguageChanged;
             ApplyCurrentLanguage();
+            
+            // Initialize auto-start button state
+            UpdateAutoStartButton();
 
             Bitmap blank = new(this._LogoImageList.ImageSize.Width, this._LogoImageList.ImageSize.Height);
             using (var g = Graphics.FromImage(blank))
@@ -817,6 +821,73 @@ Made by Hegxib | v1.3.0";
             ApplyCurrentLanguage();
         }
 
+        private const string AutoStartRegistryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+        private const string AutoStartValueName = "HxB_SAM_Picker";
+
+        private void OnAutoStartClick(object sender, EventArgs e)
+        {
+            bool currentState = IsAutoStartEnabled();
+            SetAutoStart(!currentState);
+            UpdateAutoStartButton();
+        }
+
+        private bool IsAutoStartEnabled()
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(AutoStartRegistryKey, false))
+                {
+                    if (key != null)
+                    {
+                        object value = key.GetValue(AutoStartValueName);
+                        return value != null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to check auto-start status: {ex.Message}");
+            }
+            return false;
+        }
+
+        private void SetAutoStart(bool enable)
+        {
+            try
+            {
+                using (RegistryKey key = Registry.CurrentUser.OpenSubKey(AutoStartRegistryKey, true))
+                {
+                    if (key != null)
+                    {
+                        if (enable)
+                        {
+                            string exePath = Application.ExecutablePath;
+                            key.SetValue(AutoStartValueName, $"\"{exePath}\"");
+                        }
+                        else
+                        {
+                            key.DeleteValue(AutoStartValueName, false);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var lang = Localization.LanguageManager.Instance;
+                MessageBox.Show(this, 
+                    $"Failed to update auto-start setting: {ex.Message}",
+                    lang.GetString("error_title"),
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+            }
+        }
+
+        private void UpdateAutoStartButton()
+        {
+            bool isEnabled = IsAutoStartEnabled();
+            _AutoStartButton.Text = isEnabled ? "[*] Auto-Start" : "[ ] Auto-Start";
+        }
+
         private void ApplyCurrentLanguage()
         {
             var lang = Localization.LanguageManager.Instance;
@@ -841,8 +912,8 @@ Made by Hegxib | v1.3.0";
             _ClearDoneButton.ToolTipText = lang.GetString("toolbar_clear_done_tooltip");
             _CheatSheetButton.Text = lang.GetString("toolbar_cheat_sheet");
             _CheatSheetButton.ToolTipText = lang.GetString("toolbar_cheat_sheet_tooltip");
-            _LanguageButton.Text = lang.GetString("language_select");
-            _LanguageButton.ToolTipText = lang.GetString("language_select_tooltip");
+            _LanguageButton.Text = lang.GetString("toolbar_language");
+            _LanguageButton.ToolTipText = lang.GetString("toolbar_language_tooltip");
             _DonateButton.Text = lang.GetString("toolbar_donate");
             _DonateButton.ToolTipText = lang.GetString("toolbar_donate_tooltip");
             _SocialsButton.Text = lang.GetString("toolbar_socials");
@@ -1432,6 +1503,20 @@ Made by Hegxib | v1.3.0";
             this._CallbackTimer.Enabled = false;
             this._SteamClient.RunCallbacks(false);
             this._CallbackTimer.Enabled = true;
+        }
+
+        private void OnListViewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                var listView = sender as MyListView;
+                if (listView != null && listView.SelectedIndices.Count > 0)
+                {
+                    LaunchSelectedGames(listView);
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                }
+            }
         }
 
         private void OnActivateGame(object sender, EventArgs e)

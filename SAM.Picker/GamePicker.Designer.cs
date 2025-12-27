@@ -47,6 +47,7 @@
             this._FilterJunkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this._CheatSheetButton = new System.Windows.Forms.ToolStripButton();
             this._LanguageButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this._AutoStartButton = new System.Windows.Forms.ToolStripButton();
             this._DonateButton = new System.Windows.Forms.ToolStripButton();
             this._SocialsButton = new System.Windows.Forms.ToolStripButton();
             this._DisclaimerButton = new System.Windows.Forms.ToolStripButton();
@@ -120,6 +121,7 @@
             new System.Windows.Forms.ToolStripSeparator(),
             this._CheatSheetButton,
             this._LanguageButton,
+            this._AutoStartButton,
             this._DonateButton,
             this._SocialsButton,
             this._DisclaimerButton});
@@ -195,7 +197,7 @@
             this._BulkResetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._BulkResetButton.Name = "_BulkResetButton";
             this._BulkResetButton.Size = new System.Drawing.Size(75, 22);
-            this._BulkResetButton.Text = "🔄 Bulk Reset";
+            this._BulkResetButton.Text = "[~] Bulk Reset";
             this._BulkResetButton.ToolTipText = "Reset achievements for multiple games";
             this._BulkResetButton.Click += new System.EventHandler(this.OnBulkReset);
             //
@@ -204,7 +206,7 @@
             this._ClearDoneButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._ClearDoneButton.Name = "_ClearDoneButton";
             this._ClearDoneButton.Size = new System.Drawing.Size(75, 22);
-            this._ClearDoneButton.Text = "🗑️ Clear DONE";
+            this._ClearDoneButton.Text = "[X] Clear DONE";
             this._ClearDoneButton.ToolTipText = "Clear all games from DONE section";
             this._ClearDoneButton.Click += new System.EventHandler(this.OnClearDone);
             //
@@ -213,7 +215,7 @@
             this._CheatSheetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._CheatSheetButton.Name = "_CheatSheetButton";
             this._CheatSheetButton.Size = new System.Drawing.Size(85, 22);
-            this._CheatSheetButton.Text = "📋 Cheat Sheet";
+            this._CheatSheetButton.Text = "[?] Cheat Sheet";
             this._CheatSheetButton.ToolTipText = "View shortcuts and tips";
             this._CheatSheetButton.Click += new System.EventHandler(this.OnCheatSheetClick);
             //
@@ -222,16 +224,25 @@
             this._LanguageButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._LanguageButton.Name = "_LanguageButton";
             this._LanguageButton.Size = new System.Drawing.Size(85, 22);
-            this._LanguageButton.Text = "🌍 Language";
-            this._LanguageButton.ToolTipText = "Change language / 更改语言 / 言語を変更";
+            this._LanguageButton.Text = "[Lang]";
+            this._LanguageButton.ToolTipText = "Change language";
             this._LanguageButton.DropDownOpening += new System.EventHandler(this.OnLanguageDropDownOpening);
+            //
+            //
+            this._AutoStartButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this._AutoStartButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._AutoStartButton.Name = "_AutoStartButton";
+            this._AutoStartButton.Size = new System.Drawing.Size(80, 22);
+            this._AutoStartButton.Text = "[ ] Auto-Start";
+            this._AutoStartButton.ToolTipText = "Start SAM Picker when Windows starts (OFF by default)";
+            this._AutoStartButton.Click += new System.EventHandler(this.OnAutoStartClick);
             //
             //
             this._DonateButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this._DonateButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._DonateButton.Name = "_DonateButton";
             this._DonateButton.Size = new System.Drawing.Size(60, 22);
-            this._DonateButton.Text = "☕ Donate";
+            this._DonateButton.Text = "[$] Donate";
             this._DonateButton.ToolTipText = "Support on Ko-fi";
             this._DonateButton.Click += new System.EventHandler(this.OnDonateClick);
             //
@@ -240,7 +251,7 @@
             this._SocialsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._SocialsButton.Name = "_SocialsButton";
             this._SocialsButton.Size = new System.Drawing.Size(60, 22);
-            this._SocialsButton.Text = "🌐 Socials";
+            this._SocialsButton.Text = "[@] Socials";
             this._SocialsButton.ToolTipText = "Visit x.hegxib.me";
             this._SocialsButton.Click += new System.EventHandler(this.OnSocialsClick);
             //
@@ -249,7 +260,7 @@
             this._DisclaimerButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this._DisclaimerButton.Name = "_DisclaimerButton";
             this._DisclaimerButton.Size = new System.Drawing.Size(80, 22);
-            this._DisclaimerButton.Text = "ℹ Disclaimer";
+            this._DisclaimerButton.Text = "[i] Disclaimer";
             this._DisclaimerButton.ToolTipText = "View disclaimer";
             this._DisclaimerButton.Click += new System.EventHandler(this.OnDisclaimerClick);
             //
@@ -393,6 +404,7 @@
             this._SelectedListView.Visible = false;
             this._SelectedListView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.OnGameListViewDrawItem);
             this._SelectedListView.ItemActivate += new System.EventHandler(this.OnActivateGame);
+            this._SelectedListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnListViewKeyDown);
             this._SelectedListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnGameListViewClick);
             this._SelectedListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnSelectedListViewRetrieveVirtualItem);
             //
@@ -441,6 +453,7 @@
             this._DoneListView.Visible = false;
             this._DoneListView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.OnGameListViewDrawItem);
             this._DoneListView.ItemActivate += new System.EventHandler(this.OnActivateGame);
+            this._DoneListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnListViewKeyDown);
             this._DoneListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnGameListViewClick);
             this._DoneListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnDoneListViewRetrieveVirtualItem);
             //
@@ -487,6 +500,7 @@
             this._GameListView.VirtualMode = true;
             this._GameListView.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.OnGameListViewDrawItem);
             this._GameListView.ItemActivate += new System.EventHandler(this.OnActivateGame);
+            this._GameListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnListViewKeyDown);
             this._GameListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OnGameListViewClick);
             this._GameListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.OnGameListViewRetrieveVirtualItem);
             this._GameListView.SearchForVirtualItem += new System.Windows.Forms.SearchForVirtualItemEventHandler(this.OnGameListViewSearchForVirtualItem);
@@ -539,7 +553,7 @@
             this.Controls.Add(this._PickerStatusStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "GamePicker";
-            this.Text = "HxB SAM Enhanced V1.3 | Pick a game... Any game...";
+            this.Text = "HxB SAM Enhanced V1.4 | Pick a game... Any game...";
             this._PickerToolStrip.ResumeLayout(false);
             this._PickerToolStrip.PerformLayout();
             this._PickerStatusStrip.ResumeLayout(false);
@@ -606,6 +620,7 @@
         private System.Windows.Forms.ToolStripMenuItem _ResetAchievementsMenuItem;
         private System.Windows.Forms.ToolStripButton _CheatSheetButton;
         private System.Windows.Forms.ToolStripDropDownButton _LanguageButton;
+        private System.Windows.Forms.ToolStripButton _AutoStartButton;
         private System.Windows.Forms.ToolStripButton _DonateButton;
         private System.Windows.Forms.ToolStripButton _SocialsButton;
         private System.Windows.Forms.ToolStripButton _DisclaimerButton;

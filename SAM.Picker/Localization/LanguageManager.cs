@@ -92,15 +92,15 @@ namespace SAM.Picker.Localization
         {
             var languages = new List<LanguageInfo>
             {
-                new LanguageInfo { Code = "en", Name = "English", NativeName = "English", Flag = "🇬🇧" },
-                new LanguageInfo { Code = "ar", Name = "Arabic", NativeName = "العربية", Flag = "��" },
-                new LanguageInfo { Code = "zh-CN", Name = "Chinese Simplified", NativeName = "简体中文", Flag = "��" },
-                new LanguageInfo { Code = "zh-TW", Name = "Chinese Traditional", NativeName = "繁體中文", Flag = "��" },
-                new LanguageInfo { Code = "ja", Name = "Japanese", NativeName = "日本語", Flag = "��" },
-                new LanguageInfo { Code = "ko", Name = "Korean", NativeName = "한국어", Flag = "��" },
-                new LanguageInfo { Code = "es", Name = "Spanish", NativeName = "Español", Flag = "🇪🇸" },
-                new LanguageInfo { Code = "fr", Name = "French", NativeName = "Français", Flag = "🇫🇷" },
-                new LanguageInfo { Code = "de", Name = "German", NativeName = "Deutsch", Flag = "🇩🇪" }
+                new LanguageInfo { Code = "en", Name = "English", NativeName = "English" },
+                new LanguageInfo { Code = "ar", Name = "Arabic", NativeName = "العربية" },
+                new LanguageInfo { Code = "zh-CN", Name = "Chinese Simplified", NativeName = "简体中文" },
+                new LanguageInfo { Code = "zh-TW", Name = "Chinese Traditional", NativeName = "繁體中文" },
+                new LanguageInfo { Code = "ja", Name = "Japanese", NativeName = "日本語" },
+                new LanguageInfo { Code = "ko", Name = "Korean", NativeName = "한국어" },
+                new LanguageInfo { Code = "es", Name = "Spanish", NativeName = "Español" },
+                new LanguageInfo { Code = "fr", Name = "French", NativeName = "Français" },
+                new LanguageInfo { Code = "de", Name = "German", NativeName = "Deutsch" }
             };
             
             return languages;
@@ -155,6 +155,5 @@ namespace SAM.Picker.Localization
         public string Code { get; set; }
         public string Name { get; set; }
         public string NativeName { get; set; }
-        public string Flag { get; set; }
     }
 }
