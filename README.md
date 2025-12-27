@@ -1,4 +1,4 @@
-# HxB SAM Enhanced V1.3
+# HxB SAM Enhanced V1.4
 
 <img width="453" height="210" alt="Hegxib transp" src="https://github.com/user-attachments/assets/07fe9bfe-f99b-4447-8f10-616c9e996fb0" />
 
@@ -8,7 +8,7 @@
 
 ## 🎯 What is HxB SAM Enhanced?
 
-A powerful fork of Gibbed's Steam Achievement Manager with **25+ exclusive features** not available in the original. Built for serious gamers who want complete control over their Steam achievements with intelligent automation, visual organization, multi-language support, and realistic timing systems.
+A powerful fork of Gibbed's Steam Achievement Manager with **30+ exclusive features** not available in the original. Built for serious gamers who want complete control over their Steam achievements with intelligent automation, visual organization, multi-language support, and realistic timing systems.
 
 **Requirements:**
 - Windows 7 or higher
@@ -19,14 +19,14 @@ A powerful fork of Gibbed's Steam Achievement Manager with **25+ exclusive featu
 
 ## ⚡ Quick Comparison: Original vs Enhanced
 
-| Feature | Gibbed's Original SAM | HxB SAM Enhanced V1.3 |
+| Feature | Gibbed's Original SAM | HxB SAM Enhanced V1.4 |
 |---------|----------------------|------------------------|
 | **Multi-Language** | English only | 9 languages (EN, AR, DE, ES, FR, JA, KO, ZH-CN, ZH-TW) |
 | **Achievement Display** | Alphabetical list | Steam global % order + rarity indicators |
 | **Unlock Timing** | Manual only | Smart auto-distribution + auto-unlock system |
 | **Game Organization** | Single flat list | 3 sections: SELECTED / DONE / OTHER |
 | **Image Caching** | Basic cache | Multi-tier cache + auto-download assets |
-| **Keyboard Shortcuts** | None | Alt+Click, Ctrl+Click quick actions |
+| **Keyboard Shortcuts** | None | Alt+Click, Ctrl+Click, Enter to Launch |
 | **Bulk Operations** | None | Bulk reset, bulk timing, select all |
 | **Section Management** | N/A | Persistent sections with dedicated caches |
 | **Context Menus** | Basic | Dynamic context-aware menus |
@@ -35,13 +35,32 @@ A powerful fork of Gibbed's Steam Achievement Manager with **25+ exclusive featu
 | **Asset Management** | None | Auto-downloads headers, capsules, library images |
 | **Help System** | None | Built-in cheat sheet with all shortcuts |
 | **Launch Features** | Launch game only | Launch random from selected + launch queue |
-| **Visual Feedback** | Basic | Color-coded sections, emojis, progress indicators |
+| **Visual Feedback** | Basic | Color-coded sections, ASCII indicators, progress |
+| **System Integration** | None | Auto-start with Windows toggle |
+| **Live Sync** | None | Real-time language synchronization |
+
+---
+
+## 🚀 Exclusive V1.4 Features
+
+### 🌍 **Live Language Sync** *(New in V1.4)*
+- **Instant Updates**: Changing the language in the Picker now instantly updates all open Game windows.
+- **No Restart Required**: Switch between 9 languages on the fly without closing your apps.
+
+### ⚙️ **Windows Auto-Start** *(New in V1.4)*
+- **One-Click Toggle**: Easily enable or disable SAM starting automatically with Windows.
+- **Registry Integrated**: Uses standard Windows startup mechanisms for reliability.
+
+### ⌨️ **Enhanced Controls** *(New in V1.4)*
+- **Enter to Launch**: Select one or more games and press `Enter` to launch them instantly.
+- **ASCII Compatibility**: Replaced emojis with ASCII symbols to ensure perfect display on all Windows locales.
+- **UTF-8 Encoding**: Fixed "???" character issues by switching to UTF-8 (No BOM) encoding.
 
 ---
 
 ## 🚀 Exclusive V1.3 Features
 
-### 🌍 **Multi-Language Support** *(New in V1.3)*
+### 🌍 **Multi-Language Support**
 - **9 Languages**: Full localization for global accessibility
   - 🇺🇸 English (Default)
   - 🇸🇦 Arabic (العربية)
