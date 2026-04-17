@@ -393,6 +393,7 @@ See [LICENSE.txt](LICENSE.txt) for complete details.
 *Use Responsibly & Ethically*
 
 ---
+.
 
 Made by **HEGXIB** | 2025  
 [hegxib.me](https://hegxib.me) | [x.hegxib.me](https://x.hegxib.me)
